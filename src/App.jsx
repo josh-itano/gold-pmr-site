@@ -81,12 +81,12 @@ function HomePage({ nav }) {
     <section className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 40px" }}>
       <Reveal><SectionHeader badge="Who We Serve" title="Two Paths. One Standard." /></Reveal>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 24 }}>
-        {[{p:"facilities",badge:"For Facilities",h:"Higher Reimbursement. Zero Compliance Risk. Better Outcomes.",d:"Gold physicians maximize CMG scores, maintain 100% CMS compliance, and deliver outcomes that become your strongest marketing asset.",cta:"Explore Partnership →"},{p:"physicians",badge:"For Physicians",h:"Best Tools. Best Support. Best Career in PM&R.",d:"70% compensation with AI documentation that makes you earn more per hour. Personalized schedules, paid leadership roles, and a mission worth showing up for.",cta:"Explore Careers →"}].map((c,i) => <Reveal key={i} delay={i*0.1}><div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 48, cursor: "pointer", transition: "all 0.4s", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} onClick={() => nav(c.p)} onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.3)"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}><div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.gold, marginBottom: 20 }}>{c.badge}</div><h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, marginBottom: 16, color: C.dark }}>{c.h}</h3><p style={{ color: C.muted, fontSize: 15, lineHeight: 1.7, marginBottom: 24 }}>{c.d}</p><span style={{ color: C.gold, fontSize: 15, fontWeight: 600 }}>{c.cta}</span></div></Reveal>)}
+        {[{p:"facilities",badge:"For Facilities",h:"Higher Reimbursement. Zero Compliance Risk. Better Outcomes.",d:"Gold physicians maximize CMI scores, maintain 100% CMS compliance, and deliver outcomes that become your strongest marketing asset.",cta:"Explore Partnership →"},{p:"physicians",badge:"For Physicians",h:"Best Tools. Best Support. Best Career in PM&R.",d:"70% compensation with AI documentation that makes you earn more per hour. Personalized schedules, paid leadership roles, and a mission worth showing up for.",cta:"Explore Careers →"}].map((c,i) => <Reveal key={i} delay={i*0.1} style={{ height: "100%" }}><div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 48, cursor: "pointer", transition: "all 0.4s", boxShadow: "0 1px 4px rgba(0,0,0,0.04)", height: "100%", display: "flex", flexDirection: "column" }} onClick={() => nav(c.p)} onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(201,162,39,0.3)"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"; }}><div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.gold, marginBottom: 20 }}>{c.badge}</div><h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, marginBottom: 16, color: C.dark }}>{c.h}</h3><p style={{ color: C.muted, fontSize: 15, lineHeight: 1.7, marginBottom: 24, flex: 1 }}>{c.d}</p><span style={{ color: C.gold, fontSize: 15, fontWeight: 600 }}>{c.cta}</span></div></Reveal>)}
       </div>
     </section>
     <section style={{ background: C.navy, borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
       <div className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 40px" }}>
-        <Reveal><div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 32 }}><div style={{ maxWidth: 560 }}><Badge>GoldOS Platform</Badge><h2 className="sec-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, margin: "20px 0 16px", color: C.dark }}>Technology That No Competitor Can Match</h2><p style={{ color: C.muted, fontSize: 16, lineHeight: 1.8 }}>AI documentation co-pilot, real-time compliance tracking, CMG optimization, and automated billing — purpose-built for PM&R by Gold Management Services MSO.</p></div><Btn primary onClick={() => nav("technology")}>Explore the Platform →</Btn></div></Reveal>
+        <Reveal><div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 32 }}><div style={{ maxWidth: 560 }}><Badge>GoldOS Platform</Badge><h2 className="sec-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, margin: "20px 0 16px", color: C.dark }}>Technology That No Competitor Can Match</h2><p style={{ color: C.muted, fontSize: 16, lineHeight: 1.8 }}>AI documentation co-pilot, real-time compliance tracking, CMG/CMI optimization, and automated billing — purpose-built for PM&R by Gold Management Services MSO.</p></div><Btn primary onClick={() => nav("technology")}>Explore the Platform →</Btn></div></Reveal>
       </div>
     </section>
   </>;
@@ -95,17 +95,17 @@ function HomePage({ nav }) {
 // ===== FACILITIES =====
 function FacilitiesPage({ nav }) {
   const benefits = [
-    { icon: "💰", title: "Higher Reimbursement", desc: "Documentation education produces higher CMG scores. Gold targets CMG ≥1.0 — facilities with poor documentation fall below and lose money per admission." },
+    { icon: "💰", title: "Higher Reimbursement", desc: "Documentation education produces higher CMI scores. Gold targets CMI ≥1.5 — facilities with poor documentation fall below and lose money per admission." },
     { icon: "🛡️", title: "Zero Compliance Risk", desc: "100% on-time CMS documentation. One late note = $30K–$80K technical denial. Our Compliance Watchdog tracks every deadline in real time." },
-    { icon: "📊", title: "Superior Outcomes", desc: "Lower return-to-acute, ≥80% discharge-to-community, reduced 30-day readmissions. Metrics that drive your referral pipeline." },
-    { icon: "⚡", title: "GoldOS Technology", desc: "Real-time compliance dashboards, CMG optimization alerts, outcome analytics — capabilities no other physician group provides." },
+    { icon: "📊", title: "Superior Outcomes", desc: "Lower return-to-acute, ≥85% discharge-to-community, reduced 30-day readmissions. Metrics that drive your referral pipeline." },
+    { icon: "⚡", title: "GoldOS Technology", desc: "Real-time compliance dashboards, CMI optimization alerts, outcome analytics — capabilities no other physician group provides." },
     { icon: "✓", title: "Gold Bar Certified Physicians", desc: "Rigorous IRF-specific certification. Consistent quality, not physician roulette." },
     { icon: "🔄", title: "Continuity Guaranteed", desc: "Multi-provider model with built-in coverage redundancy. No scrambling when your solo medical director goes on vacation." },
   ];
   const [beds, setBeds] = useState(30);
-  const [avgCmg, setAvgCmg] = useState("0.9");
+  const [avgCmg, setAvgCmg] = useState("1.25");
   const [denials, setDenials] = useState("2");
-  const cmgLift = Math.round(beds * 365 * 0.75 * (1.0 - parseFloat(avgCmg)) * 800);
+  const cmgLift = Math.round(beds * 365 * 0.75 * (1.5 - parseFloat(avgCmg)) * 800);
   const denialSavings = parseInt(denials) * 55000;
   const totalImpact = Math.max(0, cmgLift) + denialSavings;
 
@@ -115,7 +115,7 @@ function FacilitiesPage({ nav }) {
     { q: "How often are PMR face-to-face notes completed on time?", opts: ["Always (100%)", "Usually (90%+)", "Sometimes (70-90%)", "Inconsistently (<70%)"], sc: [0,1,2,3] },
     { q: "How many technical denials in the past 12 months?", opts: ["None", "1-2", "3-5", "More than 5"], sc: [0,1,2,3] },
     { q: "Does your physician group provide real-time compliance tracking?", opts: ["Yes, with technology", "Yes, manually", "Partially", "No"], sc: [0,1,2,3] },
-    { q: "What is your current CMG score average?", opts: ["Above 1.2", "1.0 – 1.2", "0.8 – 1.0", "Below 0.8 or unknown"], sc: [0,1,2,3] },
+    { q: "What is your current CMI score average?", opts: ["Above 1.5", "1.3 – 1.5", "1.1 – 1.3", "Below 1.1 or unknown"], sc: [0,1,2,3] },
     { q: "How would you rate your physician's IDT leadership?", opts: ["Excellent", "Good", "Fair", "Poor"], sc: [0,1,2,3] },
   ];
   const compScore = Object.values(compAnswers).reduce((a,b) => a+b, 0);
@@ -125,7 +125,7 @@ function FacilitiesPage({ nav }) {
 
   return <>
     <section className="sec-hero" style={{ padding: "140px 40px 80px", maxWidth: 1200, margin: "0 auto" }}>
-      <Reveal><Badge>For Facilities</Badge><h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: "min(56px, 7vw)", fontWeight: 700, lineHeight: 1.1, margin: "24px 0 20px", background: `linear-gradient(135deg, ${C.dark} 0%, ${C.dark} 60%, ${C.gold} 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Your Physician Partner<br/>Should Make You Money</h1><p style={{ color: C.muted, fontSize: 19, maxWidth: 640, lineHeight: 1.7, marginBottom: 32 }}>Most physician groups fill a chair. Gold fills your revenue gap. Higher CMG scores, zero compliance risk, and outcomes that become your competitive advantage.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary onClick={() => document.getElementById("roi")?.scrollIntoView({ behavior: "smooth" })}>Calculate Your ROI →</Btn><Btn onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}>Take Compliance Assessment</Btn></div></Reveal>
+      <Reveal><Badge>For Facilities</Badge><h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: "min(56px, 7vw)", fontWeight: 700, lineHeight: 1.1, margin: "24px 0 20px", background: `linear-gradient(135deg, ${C.dark} 0%, ${C.dark} 60%, ${C.gold} 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Your Physician Partner<br/>Should Make You Money</h1><p style={{ color: C.muted, fontSize: 19, maxWidth: 640, lineHeight: 1.7, marginBottom: 32 }}>Most physician groups fill a chair. Gold fills your revenue gap. Higher CMI scores, zero compliance risk, and outcomes that become your competitive advantage.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary onClick={() => document.getElementById("roi")?.scrollIntoView({ behavior: "smooth" })}>Calculate Your ROI →</Btn><Btn onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}>Take Compliance Assessment</Btn></div></Reveal>
     </section>
     <section className="sec-bot" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 40px 100px" }}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>{benefits.map((b,i) => <Reveal key={i} delay={i*0.06}><Card {...b} /></Reveal>)}</div></section>
 
@@ -134,7 +134,7 @@ function FacilitiesPage({ nav }) {
       <div className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 40px" }}>
         <Reveal><SectionHeader badge="Case Study" title="The Gold Effect: Before & After" /></Reveal>
         <Reveal delay={0.1}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 24 }}>
-          {[{l:"CMG Score",b:"0.85",a:"1.15"},{l:"Doc Compliance",b:"72%",a:"100%"},{l:"Discharge Home",b:"61%",a:"84%"},{l:"Return to Acute",b:"14%",a:"6%"}].map((m,i) => <div key={i} style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 28, textAlign: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}><div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.muted, marginBottom: 16 }}>{m.l}</div><div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 16 }}><div><div style={{ fontSize: 13, color: C.red, fontWeight: 600, marginBottom: 4 }}>Before</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: "rgba(0,0,0,0.3)" }}>{m.b}</div></div><div style={{ color: C.gold, fontSize: 20 }}>→</div><div><div style={{ fontSize: 13, color: C.green, fontWeight: 600, marginBottom: 4 }}>After</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: C.gold }}>{m.a}</div></div></div></div>)}
+          {[{l:"CMI Score",b:"1.1",a:"1.6"},{l:"Doc Compliance",b:"72%",a:"100%"},{l:"Discharge Home",b:"61%",a:"85%"},{l:"Return to Acute",b:"14%",a:"4%"}].map((m,i) => <div key={i} style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 28, textAlign: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}><div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.muted, marginBottom: 16 }}>{m.l}</div><div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 16 }}><div><div style={{ fontSize: 13, color: C.red, fontWeight: 600, marginBottom: 4 }}>Before</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: "rgba(0,0,0,0.3)" }}>{m.b}</div></div><div style={{ color: C.gold, fontSize: 20 }}>→</div><div><div style={{ fontSize: 13, color: C.green, fontWeight: 600, marginBottom: 4 }}>After</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: C.gold }}>{m.a}</div></div></div></div>)}
         </div></Reveal>
       </div>
     </section>
@@ -146,14 +146,14 @@ function FacilitiesPage({ nav }) {
         <div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 40, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24, color: C.dark }}>Your Facility</h3>
           <Input label="Number of IRF Beds" type="number" value={beds} onChange={v => setBeds(Math.max(1, parseInt(v) || 1))} />
-          <Input label="Current Average CMG Score" type="select" value={avgCmg} onChange={setAvgCmg} options={[{value:"0.7",label:"Below 0.8"},{value:"0.8",label:"0.8–0.9"},{value:"0.9",label:"0.9–1.0"},{value:"1.0",label:"1.0–1.1"},{value:"1.1",label:"Above 1.1"}]} />
+          <Input label="Current Average CMI Score" type="select" value={avgCmg} onChange={setAvgCmg} options={[{value:"1.05",label:"Below 1.1"},{value:"1.15",label:"1.1–1.2"},{value:"1.25",label:"1.2–1.3"},{value:"1.35",label:"1.3–1.4"},{value:"1.45",label:"1.4–1.5"},{value:"1.55",label:"Above 1.5"}]} />
           <Input label="Technical Denials per Year" type="select" value={denials} onChange={setDenials} options={[{value:"0",label:"None"},{value:"1",label:"1"},{value:"2",label:"2–3"},{value:"4",label:"4–5"},{value:"6",label:"6+"}]} />
         </div>
         <div style={{ background: `linear-gradient(135deg, rgba(201,162,39,0.06), rgba(201,162,39,0.02))`, border: "1px solid rgba(201,162,39,0.2)", padding: 40 }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24, color: C.dark }}>Estimated Annual Impact</h3>
-          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>CMG Score Improvement</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: C.gold }}>${Math.max(0,cmgLift).toLocaleString()}</div></div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>CMI Score Improvement</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: C.gold }}>${Math.max(0,cmgLift).toLocaleString()}</div></div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>Denial Prevention Savings</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: C.gold }}>${denialSavings.toLocaleString()}</div></div>
-          <div style={{ borderTop: "1px solid rgba(201,162,39,0.2)", paddingTop: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>Total Revenue Impact</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: C.gold }}>${totalImpact.toLocaleString()}</div><div style={{ fontSize: 13, color: C.muted, marginTop: 8 }}>per year · Gold target CMG ≥1.0, 100% compliance</div></div>
+          <div style={{ borderTop: "1px solid rgba(201,162,39,0.2)", paddingTop: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>Total Revenue Impact</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: C.gold }}>${totalImpact.toLocaleString()}</div><div style={{ fontSize: 13, color: C.muted, marginTop: 8 }}>per year · Gold target CMI ≥1.5, 100% compliance</div></div>
           <Btn primary full onClick={() => nav("contact")} style={{ marginTop: 24 }}>Discuss These Numbers →</Btn>
         </div>
       </div></Reveal>
@@ -188,12 +188,12 @@ function FacilitiesPage({ nav }) {
 
 // ===== PHYSICIANS =====
 function PhysiciansPage({ nav }) {
-  const [ppd, setPpd] = useState(12);
-  const [dpw, setDpw] = useState("5");
-  const [reimb, setReimb] = useState("185");
-  const annual = ppd * parseInt(dpw) * 48 * parseInt(reimb);
-  const comp70 = Math.round(annual * 0.70);
-  const withLift = Math.round(annual * 1.15 * 0.70);
+  const [ppd, setPpd] = useState(30);
+  const [dpw, setDpw] = useState("7");
+  const [wpy, setWpy] = useState("26");
+  const encounters = ppd * parseInt(dpw) * parseInt(wpy);
+  const comp70 = Math.round(encounters * 78 * 0.70);
+  const withLift = Math.round(encounters * 88 * 0.70);
 
   const cards = [
     { icon: "🤖", title: "AI-Powered Practice", desc: "Custom PM&R documentation co-pilot eliminates 30–50% of documentation time. Automated billing. Compliance watchdog. Focus on patients." },
@@ -223,16 +223,16 @@ function PhysiciansPage({ nav }) {
         <Reveal delay={0.1}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 32 }}>
           <div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 40, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24, color: C.dark }}>Your Practice Profile</h3>
-            <div><label style={{ display: "block", fontSize: 13, fontWeight: 600, color: C.mutedLight, marginBottom: 6 }}>Patients Per Day: {ppd}</label><input type="range" min={6} max={20} value={ppd} onChange={e => setPpd(parseInt(e.target.value))} style={{ width: "100%", accentColor: C.gold, marginBottom: 20 }} /></div>
-            <Input label="Days Per Week" type="select" value={dpw} onChange={setDpw} options={[{value:"4",label:"4 days"},{value:"5",label:"5 days"},{value:"6",label:"6 days"}]} />
-            <Input label="Avg Reimbursement Per Encounter" type="select" value={reimb} onChange={setReimb} options={[{value:"155",label:"$155 (low)"},{value:"185",label:"$185 (avg)"},{value:"215",label:"$215 (high)"},{value:"245",label:"$245 (optimized)"}]} />
+            <div><label style={{ display: "block", fontSize: 13, fontWeight: 600, color: C.mutedLight, marginBottom: 6 }}>Patients Per Day: {ppd}</label><input type="range" min={10} max={40} value={ppd} onChange={e => setPpd(parseInt(e.target.value))} style={{ width: "100%", accentColor: C.gold, marginBottom: 20 }} /></div>
+            <Input label="Days Per Week" type="select" value={dpw} onChange={setDpw} options={[{value:"2",label:"2 days"},{value:"3",label:"3 days"},{value:"4",label:"4 days"},{value:"5",label:"5 days"},{value:"6",label:"6 days"},{value:"7",label:"7 days"}]} />
+            <Input label="Weeks Per Year" type="select" value={wpy} onChange={setWpy} options={[{value:"26",label:"26 weeks"},{value:"34",label:"34 weeks"},{value:"48",label:"48 weeks"},{value:"52",label:"52 weeks"}]} />
           </div>
           <div style={{ background: `linear-gradient(135deg, rgba(201,162,39,0.06), rgba(201,162,39,0.02))`, border: "1px solid rgba(201,162,39,0.2)", padding: 40 }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24, color: C.dark }}>Estimated Compensation</h3>
             <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>Standard (70%)</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, color: C.muted }}>${comp70.toLocaleString()}</div></div>
-            <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>With Gold AI Lift (~15%)</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: C.gold }}>${withLift.toLocaleString()}</div></div>
+            <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, color: C.muted, marginBottom: 4 }}>With Gold AI Lift (~12%)</div><div style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, color: C.gold }}>${withLift.toLocaleString()}</div></div>
             <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", padding: 16, marginBottom: 24 }}><div style={{ fontSize: 14, color: C.green, fontWeight: 600 }}>+${(withLift - comp70).toLocaleString()}/year</div><div style={{ fontSize: 13, color: C.muted }}>Estimated additional earnings from AI-optimized documentation</div></div>
-            <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6, marginBottom: 20 }}>Assumes 48 working weeks/year. Actual comp varies by facility, payer mix, and complexity.</div>
+            <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6, marginBottom: 20 }}>Based on {wpy} working weeks/year. Actual comp varies by facility, payer mix, and complexity.</div>
             <Btn primary full onClick={() => nav("contact")}>Let's Talk Compensation →</Btn>
           </div>
         </div></Reveal>

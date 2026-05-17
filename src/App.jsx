@@ -298,16 +298,44 @@ function TechnologyPage({ nav }) {
 // ===== CONTACT =====
 function ContactPage() {
   const [type, setType] = useState("facility");
-  const [form, setForm] = useState({ name: "", email: "", org: "", phone: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", org: "", phone: "", message: "", address: "", resume: null });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const set = (k, v) => setForm({ ...form, [k]: v });
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const data = new FormData();
+      data.append("type", type);
+      data.append("name", form.name);
+      data.append("email", form.email);
+      data.append("phone", form.phone);
+      data.append("message", form.message);
+      if (type === "facility") { data.append("org", form.org); data.append("address", form.address); }
+      if (type === "physician" && form.resume) data.append("resume", form.resume);
+      const res = await fetch("/api/contact", { method: "POST", body: data });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Submission failed. Please try again.");
+      }
+      setSubmitted(true);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return <section className="sec-hero" style={{ maxWidth: 800, margin: "0 auto", padding: "140px 40px 100px" }}>
     <Reveal><SectionHeader badge="Get in Touch" title="Start a Conversation" subtitle="Facility exploring a physician partnership or physiatrist exploring your next chapter — we're ready." /></Reveal>
     <Reveal delay={0.1}>{!submitted ? <div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 40, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
       <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>{[{v:"facility",l:"I'm a Facility"},{v:"physician",l:"I'm a Physician"}].map(t => <button key={t.v} onClick={() => setType(t.v)} style={{ flex: 1, padding: "12px 20px", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.3s", border: `1px solid ${type===t.v?C.gold:"rgba(0,0,0,0.12)"}`, background: type===t.v?C.gold:"transparent", color: type===t.v?C.dark:C.muted, fontFamily: "'DM Sans', sans-serif" }}>{t.l}</button>)}</div>
-      <div className="grid-contact" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}><Input label="Full Name" value={form.name} onChange={v => set("name",v)} placeholder="Dr. Jane Smith" /><Input label="Email" type="email" value={form.email} onChange={v => set("email",v)} placeholder="jane@example.com" /><Input label={type==="facility"?"Facility / Organization":"Current Practice"} value={form.org} onChange={v => set("org",v)} /><Input label="Phone" type="tel" value={form.phone} onChange={v => set("phone",v)} placeholder="(555) 123-4567" /></div>
+      <div className="grid-contact" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 20px" }}><Input label="Full Name" value={form.name} onChange={v => set("name",v)} placeholder="Dr. Jane Smith" /><Input label="Email" type="email" value={form.email} onChange={v => set("email",v)} placeholder="jane@example.com" />{type==="facility" ? <Input label="Facility / Organization" value={form.org} onChange={v => set("org",v)} /> : <div style={{ marginBottom: 20 }}><label style={{ display: "block", fontSize: 13, fontWeight: 600, color: C.mutedLight, marginBottom: 6 }}>Resume / CV</label><label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "12px 16px", background: "#FFFFFF", border: "1px solid rgba(0,0,0,0.12)", fontSize: 15, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "border-color 0.3s" }} onMouseEnter={e => e.currentTarget.style.borderColor = C.gold} onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)"}><span style={{ color: form.resume ? C.dark : C.muted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{form.resume ? form.resume.name : "Choose file (PDF, DOC, DOCX)"}</span><span style={{ color: C.gold, fontSize: 13, fontWeight: 600, marginLeft: 12, flexShrink: 0 }}>Upload</span><input type="file" accept=".pdf,.doc,.docx" onChange={e => set("resume", e.target.files[0] || null)} style={{ display: "none" }} /></label></div>}<Input label="Phone" type="tel" value={form.phone} onChange={v => set("phone",v)} placeholder="(555) 123-4567" /></div>
+      {type === "facility" && <Input label="Address" value={form.address} onChange={v => set("address",v)} placeholder="123 Main St, City, State ZIP" />}
       <Input label={type==="facility"?"Tell us about your facility":"Tell us about your career goals"} type="textarea" value={form.message} onChange={v => set("message",v)} />
-      <Btn primary full onClick={() => setSubmitted(true)} style={{ marginTop: 8 }}>Submit Inquiry →</Btn>
+      <Btn primary full onClick={handleSubmit} style={{ marginTop: 8 }}>{submitting ? "Submitting..." : "Submit Inquiry →"}</Btn>
+      {error && <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: C.red, fontSize: 13 }}>{error}</div>}
     </div> : <div style={{ background: C.slate, border: "1px solid rgba(0,0,0,0.08)", padding: 56, textAlign: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✓</div><h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: C.dark }}>Thank You</h3><p style={{ color: C.muted, fontSize: 16, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>We've received your inquiry. A member of the Gold team will reach out within one business day.</p></div>}</Reveal>
   </section>;
 }

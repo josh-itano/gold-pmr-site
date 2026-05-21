@@ -75,7 +75,7 @@ function HomePage({ nav }) {
     </section>
     <section style={{ background: C.navy, borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
       <div className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 40px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 32, textAlign: "center" }}>
-        {[{v:300,s:"+",l:"Beds Managed"},{v:12,s:"",l:"Facilities"},{v:4,s:"",l:"States"},{v:30,s:"+",l:"Providers"}].map((m,i) => <div key={i}><div className="stat-num" style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 700, color: C.gold }}><AnimNum target={m.v} suffix={m.s} /></div><div style={{ fontSize: 13, color: C.muted, textTransform: "uppercase", letterSpacing: 2, fontWeight: 500 }}>{m.l}</div></div>)}
+        {[{v:600,s:"+",l:"Beds Managed"},{v:19,s:"",l:"Facilities"},{v:4,s:"",l:"States"},{v:36,s:"+",l:"Providers"}].map((m,i) => <div key={i}><div className="stat-num" style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, fontWeight: 700, color: C.gold }}><AnimNum target={m.v} suffix={m.s} /></div><div style={{ fontSize: 13, color: C.muted, textTransform: "uppercase", letterSpacing: 2, fontWeight: 500 }}>{m.l}</div></div>)}
       </div>
     </section>
     <section className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 40px" }}>

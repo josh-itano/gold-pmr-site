@@ -1,4 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  Coins, ShieldCheck, TrendingUp, Zap, BadgeCheck, RefreshCw,
+  Bot, CalendarDays, GraduationCap, HandCoins, Stethoscope,
+  BrainCircuit, ChartColumn, ShieldAlert, ChartLine, ReceiptText, LayoutDashboard,
+} from "lucide-react";
 
 // Brand Kit — Edition 01 · 2026. Page 05 (Color) + page 12 (UI color roles).
 const C = {
@@ -32,6 +37,13 @@ const C = {
   // per the kit's digital-accessibility rules. Flag for brand review.
   green: "#047857", red: "#B91C1C", amber: "#B45309",
 };
+
+// Service iconography — kit p07. One system, held everywhere: a single 1.6px
+// stroke at 24px, charcoal, never filled, never multicolor. strokeWidth is in
+// viewBox units, so leaving it at 1.6 is what "scale the stroke with the icon"
+// means — the rendered stroke tracks the icon size automatically.
+// Icons are decorative here: every card states the same thing in its heading.
+const ICON = { size: 24, strokeWidth: 1.6, color: C.dark, "aria-hidden": true, focusable: false };
 
 // Outfit for display, headings, numerals. Jost for body and UI. System
 // fallback per kit page 12. The kit ships Light 300 / Regular 400 / Medium 500
@@ -98,8 +110,8 @@ function SectionHeader({ badge, title, subtitle, align = "center" }) {
   return <div style={{ textAlign: align, marginBottom: 56 }}>{badge && <div style={{ marginBottom: 16 }}><Badge>{badge}</Badge></div>}<h2 className="sec-title" style={{ fontFamily: F.display, fontSize: 32, fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.2, marginBottom: subtitle ? 20 : 0, color: C.dark }}>{title}</h2>{subtitle && <p style={{ color: C.muted, fontSize: 16, fontWeight: 300, maxWidth: 620, margin: align === "center" ? "0 auto" : 0, lineHeight: 1.7 }}>{subtitle}</p>}</div>;
 }
 
-function Card({ icon, title, desc }) {
-  return <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 36, transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)", position: "relative", overflow: "hidden", height: "100%", cursor: "default", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.boxShadow = "0 8px 24px rgba(15,23,42,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = C.line; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,23,42,0.04)"; }}>{icon && <div style={{ fontSize: 28, marginBottom: 16 }}>{icon}</div>}<h3 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 500, marginBottom: 12, color: C.dark }}>{title}</h3><p style={{ fontSize: 15, fontWeight: 300, color: C.muted, lineHeight: 1.7 }}>{desc}</p></div>;
+function Card({ icon: Icon, title, desc }) {
+  return <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 36, transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)", position: "relative", overflow: "hidden", height: "100%", cursor: "default", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.boxShadow = "0 8px 24px rgba(15,23,42,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = C.line; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,23,42,0.04)"; }}>{Icon && <div style={{ marginBottom: 16, display: "flex" }}><Icon {...ICON} /></div>}<h3 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 500, marginBottom: 12, color: C.dark }}>{title}</h3><p style={{ fontSize: 15, fontWeight: 300, color: C.muted, lineHeight: 1.7 }}>{desc}</p></div>;
 }
 
 // Primary = gold fill behind ink text. Kit p05 sanctions gold to draw the eye to
@@ -156,12 +168,12 @@ function HomePage({ nav }) {
 // ===== FACILITIES =====
 function FacilitiesPage({ nav }) {
   const benefits = [
-    { icon: "💰", title: "Higher Reimbursement", desc: "Documentation education produces higher CMI scores. Gold targets CMI ≥1.5 — facilities with poor documentation fall below and lose money per admission." },
-    { icon: "🛡️", title: "Zero Compliance Risk", desc: "100% on-time CMS documentation. Even one missed documentation deadline can result in costly technical denials and preventable revenue loss = $30K–$80K. Our Compliance Watchdog tracks every deadline in real time." },
-    { icon: "📊", title: "Superior Outcomes", desc: "Integrated PM&R and Internal Medicine leadership within a multidisciplinary rehab team drives superior outcomes compared to isolated single-specialty models. <8% return-to-acute, ≥82% discharge-to-community, <10% discharge to SNF." },
-    { icon: "⚡", title: "GoldOS Technology", desc: "Real-time compliance dashboards, CMI optimization alerts, outcome analytics — capabilities no other physician group provides." },
-    { icon: "✓", title: "Gold Bar Certified Physicians", desc: "Rigorous IRF-specific certification. Consistent quality, not physician roulette." },
-    { icon: "🔄", title: "Continuity Guaranteed", desc: "Multi-provider model with built-in coverage redundancy. No scrambling when your solo independent medical director goes on vacation." },
+    { icon: Coins, title: "Higher Reimbursement", desc: "Documentation education produces higher CMI scores. Gold targets CMI ≥1.5 — facilities with poor documentation fall below and lose money per admission." },
+    { icon: ShieldCheck, title: "Zero Compliance Risk", desc: "100% on-time CMS documentation. Even one missed documentation deadline can result in costly technical denials and preventable revenue loss = $30K–$80K. Our Compliance Watchdog tracks every deadline in real time." },
+    { icon: TrendingUp, title: "Superior Outcomes", desc: "Integrated PM&R and Internal Medicine leadership within a multidisciplinary rehab team drives superior outcomes compared to isolated single-specialty models. <8% return-to-acute, ≥82% discharge-to-community, <10% discharge to SNF." },
+    { icon: Zap, title: "GoldOS Technology", desc: "Real-time compliance dashboards, CMI optimization alerts, outcome analytics — capabilities no other physician group provides." },
+    { icon: BadgeCheck, title: "Gold Bar Certified Physicians", desc: "Rigorous IRF-specific certification. Consistent quality, not physician roulette." },
+    { icon: RefreshCw, title: "Continuity Guaranteed", desc: "Multi-provider model with built-in coverage redundancy. No scrambling when your solo independent medical director goes on vacation." },
   ];
   const [beds, setBeds] = useState(30);
   const [avgCmg, setAvgCmg] = useState("1.25");
@@ -259,12 +271,12 @@ function PhysiciansPage({ nav }) {
   const withLift = Math.round(encounters * 88 * 0.70);
 
   const cards = [
-    { icon: "🤖", title: "AI-Powered Practice", desc: "Documentation co-pilot built for inpatient rehab eliminates 60–70% of documentation time. Automated billing. Compliance watchdog. Focus on patients." },
-    { icon: "📅", title: "Your Schedule, Your Life", desc: "Personalized schedule — patient volume, hours, time off. Week-on/week-off, 4 day weeks, seasonal flexibility." },
-    { icon: "📈", title: "Leadership Ladder", desc: "Site Leader → Medical Director → Regional Director, and more. Paid roles with $15K–$150K+ stipends. Clear path without leaving practice." },
-    { icon: "🎓", title: "Gold Bar Certification", desc: "The only IRF-specific physician certification. CMG mastery, CMS compliance, IDT leadership. AMA CME certification pending (expected 2027)." },
-    { icon: "💰", title: "Student Loan Assistance", desc: "Loan assistance may be offered for qualifying multi-year commitments, along with sign-on and relocation support depending on position and location." },
-    { icon: "🏥", title: "Mission-Driven, Physician-Owned", desc: "Built around quality care, clinical excellence, and supporting physicians with the right tools and environment." },
+    { icon: Bot, title: "AI-Powered Practice", desc: "Documentation co-pilot built for inpatient rehab eliminates 60–70% of documentation time. Automated billing. Compliance watchdog. Focus on patients." },
+    { icon: CalendarDays, title: "Your Schedule, Your Life", desc: "Personalized schedule — patient volume, hours, time off. Week-on/week-off, 4 day weeks, seasonal flexibility." },
+    { icon: TrendingUp, title: "Leadership Ladder", desc: "Site Leader → Medical Director → Regional Director, and more. Paid roles with $15K–$150K+ stipends. Clear path without leaving practice." },
+    { icon: GraduationCap, title: "Gold Bar Certification", desc: "The only IRF-specific physician certification. CMG mastery, CMS compliance, IDT leadership. AMA CME certification pending (expected 2027)." },
+    { icon: HandCoins, title: "Student Loan Assistance", desc: "Loan assistance may be offered for qualifying multi-year commitments, along with sign-on and relocation support depending on position and location." },
+    { icon: Stethoscope, title: "Mission-Driven, Physician-Owned", desc: "Built around quality care, clinical excellence, and supporting physicians with the right tools and environment." },
   ];
   const positions = [
     { title: "IRF Medical Director", loc: "Las Vegas, NV", type: "Full-time" },
@@ -330,12 +342,12 @@ function PhysiciansPage({ nav }) {
 function TechnologyPage({ nav }) {
   const [af, setAf] = useState(0);
   const features = [
-    { name: "AI Documentation Co-Pilot", icon: "🧠", desc: "Ambient listening generates structured notes mapped to IRF-PAI items, CMS requirements, and CMG diagnoses.", bullets: ["30–50% documentation time reduction","Maps to IRF Gold Documentation standards","Learns physician preferences","PM&R-specific, not generic"] },
-    { name: "CMG Optimizer", icon: "📊", desc: "Real-time documentation analysis against the CMG Motor Matrix. Flags missing diagnoses affecting reimbursement.", bullets: ["Directly increases facility revenue","Catches missed diagnoses pre-billing","Benchmarks against CMG ≥1.0 target","Documentation becomes revenue driver"] },
-    { name: "Compliance Watchdog", icon: "🛡️", desc: "Countdown timers on every required documentation item. Escalation alerts. Eliminates $30K–$80K denial risk.", bullets: ["Real-time CMS deadline tracking","Automated escalation chain","Zero late documentation tolerance","Prevents avoidable technical denials"] },
-    { name: "Facility Scorecards", icon: "📈", desc: "Automated dashboards: CMG, discharge rates, RTA, readmissions, PEM scores for every Gold facility.", bullets: ["Real-time outcome visibility","National benchmark comparisons","Exportable facility reports","Data-driven sales conversations"] },
-    { name: "Automated Billing", icon: "💰", desc: "AI-assisted coding, claims submission, denial prevention, real-time tracking. Replacing outsourced billing.", bullets: ["Faster collections cycle","Denial pattern recognition","Provider pay transparency"] },
-    { name: "Provider Dashboard", icon: "👤", desc: "Personal metrics, compensation, scheduling, Gold Bar progress, census visibility — one interface.", bullets: ["Real-time earnings visibility","Schedule management","Gold Bar progress tracking","HIPAA-compliant comms hub"] },
+    { name: "AI Documentation Co-Pilot", icon: BrainCircuit, desc: "Ambient listening generates structured notes mapped to IRF-PAI items, CMS requirements, and CMG diagnoses.", bullets: ["30–50% documentation time reduction","Maps to IRF Gold Documentation standards","Learns physician preferences","PM&R-specific, not generic"] },
+    { name: "CMG Optimizer", icon: ChartColumn, desc: "Real-time documentation analysis against the CMG Motor Matrix. Flags missing diagnoses affecting reimbursement.", bullets: ["Directly increases facility revenue","Catches missed diagnoses pre-billing","Benchmarks against CMG ≥1.0 target","Documentation becomes revenue driver"] },
+    { name: "Compliance Watchdog", icon: ShieldAlert, desc: "Countdown timers on every required documentation item. Escalation alerts. Eliminates $30K–$80K denial risk.", bullets: ["Real-time CMS deadline tracking","Automated escalation chain","Zero late documentation tolerance","Prevents avoidable technical denials"] },
+    { name: "Facility Scorecards", icon: ChartLine, desc: "Automated dashboards: CMG, discharge rates, RTA, readmissions, PEM scores for every Gold facility.", bullets: ["Real-time outcome visibility","National benchmark comparisons","Exportable facility reports","Data-driven sales conversations"] },
+    { name: "Automated Billing", icon: ReceiptText, desc: "AI-assisted coding, claims submission, denial prevention, real-time tracking. Replacing outsourced billing.", bullets: ["Faster collections cycle","Denial pattern recognition","Provider pay transparency"] },
+    { name: "Provider Dashboard", icon: LayoutDashboard, desc: "Personal metrics, compensation, scheduling, Gold Bar progress, census visibility — one interface.", bullets: ["Real-time earnings visibility","Schedule management","Gold Bar progress tracking","HIPAA-compliant comms hub"] },
   ];
   return <>
     <section className="sec-hero" style={{ padding: "140px 40px 80px", maxWidth: 1200, margin: "0 auto" }}>
@@ -344,7 +356,7 @@ function TechnologyPage({ nav }) {
     <section className="sec-bot" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px 80px" }}>
       <Reveal><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))", gap: 16, marginBottom: 64 }}>{["EHR-Agnostic","AI-Assisted, Physician-Controlled","Data as Competitive Advantage","Built for Practice, Empowering Facilities"].map((p,i) => <div key={i} style={{ background: C.navy, border: `1px solid ${C.line}`, padding: "16px 20px", textAlign: "center" }}><span style={{ fontSize: 14, fontWeight: 500, color: C.deepGold }}>{p}</span></div>)}</div></Reveal>
       <Reveal><div style={{ display: "grid", gridTemplateColumns: "280px 1fr", gap: 0 }} className="grid-2-stack">
-        <div style={{ borderRight: `1px solid ${C.line}` }}>{features.map((f,i) => <button key={i} onClick={() => setAf(i)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "18px 20px", background: af === i ? C.goldSoft : "transparent", border: "none", borderLeft: `3px solid ${af === i ? C.deepGold : "transparent"}`, color: af === i ? C.dark : C.muted, fontSize: 14, fontWeight: af === i ? 600 : 400, cursor: "pointer", textAlign: "left", transition: "all 0.3s", fontFamily: F.body }}><span style={{ fontSize: 20 }}>{f.icon}</span> {f.name}</button>)}</div>
+        <div style={{ borderRight: `1px solid ${C.line}` }}>{features.map((f,i) => <button key={i} onClick={() => setAf(i)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "18px 20px", background: af === i ? C.goldSoft : "transparent", border: "none", borderLeft: `3px solid ${af === i ? C.deepGold : "transparent"}`, color: af === i ? C.dark : C.muted, fontSize: 14, fontWeight: af === i ? 600 : 400, cursor: "pointer", textAlign: "left", transition: "all 0.3s", fontFamily: F.body }}><f.icon {...ICON} size={20} color="currentColor" /> {f.name}</button>)}</div>
         <div style={{ padding: "32px 40px", background: C.slate, border: `1px solid ${C.line}`, minHeight: 340 }}><h3 style={{ fontSize: 24, fontWeight: 500, marginBottom: 8, color: C.dark }}>{features[af].name}</h3><p style={{ color: C.muted, fontSize: 15, lineHeight: 1.7, marginBottom: 24 }}>{features[af].desc}</p><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>{features[af].bullets.map((b,i) => <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "12px 16px", background: "rgba(0,0,0,0.02)", border: `1px solid ${C.line}` }}><span style={{ color: C.deepGold, marginTop: 1 }} aria-hidden="true">✦</span><span style={{ fontSize: 14, color: C.mutedLight, lineHeight: 1.5 }}>{b}</span></div>)}</div></div>
       </div></Reveal>
     </section>

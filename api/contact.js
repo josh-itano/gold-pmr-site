@@ -18,18 +18,13 @@ const NOTIFY_TO = [
 const escapeHtml = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-const buildEmailHtml = ({ type, fields, resumeUrl }) => {
+const buildEmailHtml = ({ fields }) => {
   const rows = [
     { label: 'Name', value: fields.name },
     { label: 'Email', value: fields.email },
     { label: 'Phone', value: fields.phone },
-    ...(type === 'facility' ? [
-      { label: 'Organization', value: fields.org },
-      { label: 'Address', value: fields.address },
-    ] : []),
-    ...(type === 'physician' && resumeUrl ? [
-      { label: 'Resume', value: `<a href="${resumeUrl}" style="color: #C9A227;">Download (link valid 7 days)</a>`, raw: true },
-    ] : []),
+    { label: 'Organization', value: fields.org },
+    { label: 'Address', value: fields.address },
     { label: 'Message', value: escapeHtml(fields.message || '—').replace(/\n/g, '<br>'), raw: true },
   ];
   const tableRows = rows.map(r => `
@@ -40,7 +35,7 @@ const buildEmailHtml = ({ type, fields, resumeUrl }) => {
   `).join('');
   return `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-      <h2 style="color: #C9A227; margin: 0 0 8px; font-size: 22px;">New ${type === 'facility' ? 'Facility Inquiry' : 'Physician Application'}</h2>
+      <h2 style="color: #C9A227; margin: 0 0 8px; font-size: 22px;">New Facility Inquiry</h2>
       <p style="color: #64748B; margin: 0 0 24px; font-size: 14px;">Received on goldpmr.com</p>
       <table style="border-collapse: collapse; width: 100%; border: 1px solid #E2E8F0; font-size: 14px;">${tableRows}</table>
       <p style="color: #94A3B8; font-size: 12px; margin-top: 24px;">Reply directly to this email to respond to the submitter.</p>
@@ -48,7 +43,7 @@ const buildEmailHtml = ({ type, fields, resumeUrl }) => {
   `;
 };
 
-const sendNotification = async ({ type, fields, resumeUrl }) => {
+const sendNotification = async ({ fields }) => {
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -60,8 +55,8 @@ const sendNotification = async ({ type, fields, resumeUrl }) => {
         from: 'Gold PM&R <noreply@goldpmr.com>',
         to: NOTIFY_TO,
         reply_to: fields.email,
-        subject: `New ${type === 'facility' ? 'facility inquiry' : 'physician application'} from ${fields.name || 'unknown'}`,
-        html: buildEmailHtml({ type, fields, resumeUrl }),
+        subject: `New facility inquiry from ${fields.name || 'unknown'}`,
+        html: buildEmailHtml({ fields }),
       }),
     });
     if (!res.ok) {
@@ -88,8 +83,12 @@ export default async function handler(req) {
     return json(400, { error: 'Invalid form data' });
   }
 
+  // Facility-only. Physician intake moved to careers.goldpmr.com. The resume
+  // storage block below is now unreachable (the site never sends a resume) but
+  // is left intact rather than unpicked from the live insert path — pruning it
+  // is a separate low-risk cleanup once facility submissions are confirmed healthy.
   const type = form.get('type');
-  if (type !== 'facility' && type !== 'physician') {
+  if (type !== 'facility') {
     return json(400, { error: 'Invalid submission type' });
   }
 
@@ -116,13 +115,7 @@ export default async function handler(req) {
   const { error: insErr } = await supabase.from('submissions').insert({ type, ...fields, resume_path: resumePath });
   if (insErr) return json(500, { error: insErr.message });
 
-  let resumeUrl = null;
-  if (resumePath) {
-    const { data } = await supabase.storage.from('resumes').createSignedUrl(resumePath, 60 * 60 * 24 * 7);
-    resumeUrl = data?.signedUrl || null;
-  }
-
-  await sendNotification({ type, fields, resumeUrl });
+  await sendNotification({ fields });
 
   return json(200, { ok: true });
 }

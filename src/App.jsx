@@ -117,10 +117,26 @@ function Card({ icon: Icon, title, desc }) {
 // Primary = gold fill behind ink text. Kit p05 sanctions gold to draw the eye to
 // "a single call to action" — that's a fill, not gold text. Secondary borders
 // and hover text resolve to Deep Gold, never #C9A227.
+// Outbound funnel to the careers site. careers.goldpmr.com owns the live
+// openings and the GoldOS-connected apply flow; this marketing site funnels to
+// it. Each touchpoint carries a distinct utm_content so recruiting can attribute
+// where a candidate entered. Keep utm_source/medium/campaign stable — analytics
+// groups on them; vary only content.
+const CAREERS_URL = "https://careers.goldpmr.com/";
+const careersUrl = (content) =>
+  `${CAREERS_URL}?utm_source=goldpmr&utm_medium=website&utm_campaign=careers&utm_content=${content}`;
+
 // minHeight 44 — kit p12, "tap targets at least 44 x 44 px."
-function Btn({ children, primary, onClick, full, style: s = {} }) {
+// Renders a real <a> when `href` is given (crawlable, middle-clickable,
+// right-click-open) — window.open would forfeit all three. External links get
+// target=_blank + rel=noopener,noreferrer.
+function Btn({ children, primary, onClick, href, external, full, style: s = {} }) {
   const base = primary ? { background: C.gold, color: C.dark, border: "1px solid transparent" } : { background: "transparent", color: C.dark, border: `1px solid ${C.line}` };
-  return <button onClick={onClick} style={{ ...base, fontWeight: 500, padding: "13px 32px", minHeight: 44, fontSize: 15, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)", fontFamily: F.body, letterSpacing: 0.5, width: full ? "100%" : "auto", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, ...s }} onMouseEnter={e => { if (primary) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,162,39,0.3)"; } else { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; } }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; if (!primary) { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; } }}>{children}</button>;
+  const style = { ...base, fontWeight: 500, padding: "13px 32px", minHeight: 44, fontSize: 15, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)", fontFamily: F.body, letterSpacing: 0.5, width: full ? "100%" : "auto", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, textDecoration: "none", boxSizing: "border-box", ...s };
+  const onEnter = e => { if (primary) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,162,39,0.3)"; } else { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; } };
+  const onLeave = e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; if (!primary) { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; } };
+  if (href) return <a href={href} onClick={onClick} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style} onMouseEnter={onEnter} onMouseLeave={onLeave}>{children}</a>;
+  return <button onClick={onClick} style={style} onMouseEnter={onEnter} onMouseLeave={onLeave}>{children}</button>;
 }
 
 // No `outline: none` here — it would beat the global :focus-visible bronze ring,
@@ -262,7 +278,7 @@ function FacilitiesPage({ nav }) {
 }
 
 // ===== PHYSICIANS =====
-function PhysiciansPage({ nav }) {
+function PhysiciansPage() {
   const [ppd, setPpd] = useState(30);
   const [dpw, setDpw] = useState("7");
   const [wpy, setWpy] = useState("26");
@@ -278,17 +294,14 @@ function PhysiciansPage({ nav }) {
     { icon: HandCoins, title: "Student Loan Assistance", desc: "Loan assistance may be offered for qualifying multi-year commitments, along with sign-on and relocation support depending on position and location." },
     { icon: Stethoscope, title: "Mission-Driven, Physician-Owned", desc: "Built around quality care, clinical excellence, and supporting physicians with the right tools and environment." },
   ];
-  const positions = [
-    { title: "IRF Medical Director", loc: "Las Vegas, NV", type: "Full-time" },
-    { title: "Physiatrist — Inpatient Rehab", loc: "Denver, CO", type: "Full-time" },
-    { title: "Internal Medicine — Post-Acute Co-Management", loc: "Denver, CO", type: "Full-time" },
-    { title: "Physiatrist — Acute Rehab Unit", loc: "Phoenix, AZ", type: "Full-time" },
-    { title: "PM&R Physician", loc: "Thousand Oaks, CA", type: "Full / Part-time" },
-  ];
-
+  // Live openings and applications are owned by careers.goldpmr.com (GoldOS-
+  // connected). This page no longer hardcodes a positions list — a static list
+  // here would misrepresent what's actually open. When the careers app exposes a
+  // jobs JSON feed, a live "top openings" strip can render here and deep-link
+  // each role to its posting; until then, funnel out.
   return <>
     <section className="sec-hero" style={{ padding: "140px 40px 80px", maxWidth: 1200, margin: "0 auto" }}>
-      <Reveal><Badge>For Physicians</Badge><h1 className="hero-title" style={{ fontFamily: F.display, fontSize: "min(48px, 7vw)", fontWeight: 500, lineHeight: 1.15, letterSpacing: -0.5, margin: "24px 0 20px", color: C.dark }}>Practice Medicine.<br/>We Handle Everything Else.</h1><p style={{ color: C.muted, fontSize: 18, fontWeight: 300, maxWidth: 640, lineHeight: 1.8, marginBottom: 32 }}>A collaborative practice environment where PM&R and Internal Medicine physicians co-manage every patient. 70% compensation, AI documentation that lets you earn more per hour, personalized schedules, a leadership ladder — and a supportive team that believes in high quality patient care.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary onClick={() => document.getElementById("positions")?.scrollIntoView({ behavior: "smooth" })}>View Open Positions →</Btn><Btn onClick={() => document.getElementById("comp-calc")?.scrollIntoView({ behavior: "smooth" })}>Estimate Your Earnings</Btn></div></Reveal>
+      <Reveal><Badge>For Physicians</Badge><h1 className="hero-title" style={{ fontFamily: F.display, fontSize: "min(48px, 7vw)", fontWeight: 500, lineHeight: 1.15, letterSpacing: -0.5, margin: "24px 0 20px", color: C.dark }}>Practice Medicine.<br/>We Handle Everything Else.</h1><p style={{ color: C.muted, fontSize: 18, fontWeight: 300, maxWidth: 640, lineHeight: 1.8, marginBottom: 32 }}>A collaborative practice environment where PM&R and Internal Medicine physicians co-manage every patient. 70% compensation, AI documentation that lets you earn more per hour, personalized schedules, a leadership ladder — and a supportive team that believes in high quality patient care.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary href={careersUrl("physicians-hero")} external>View Open Positions →</Btn><Btn onClick={() => document.getElementById("comp-calc")?.scrollIntoView({ behavior: "smooth" })}>Estimate Your Earnings</Btn></div></Reveal>
     </section>
     <section className="sec-bot" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 40px 100px" }}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>{cards.map((b,i) => <Reveal key={i} delay={i*0.06}><Card {...b} /></Reveal>)}</div></section>
 
@@ -309,19 +322,21 @@ function PhysiciansPage({ nav }) {
             <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)", marginBottom: 4 }}>With Gold AI Lift (~12%)</div><div style={{ fontFamily: F.display, fontSize: 44, fontWeight: 300, color: C.gold }}>${withLift.toLocaleString()}</div></div>
             <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", padding: 16, marginBottom: 24 }}><div style={{ fontSize: 14, color: C.white, fontWeight: 400 }}>+${(withLift - comp70).toLocaleString()}/year</div><div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)" }}>Estimated additional earnings from AI-optimized documentation</div></div>
             <div style={{ fontSize: 12, fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 20 }}>Based on {wpy} working weeks/year. Actual comp varies by facility, payer mix, and complexity.</div>
-            <Btn primary full onClick={() => nav("contact")}>Let's Talk Compensation →</Btn>
+            <Btn primary full href={careersUrl("comp-estimator")} external>Explore Open Roles →</Btn>
           </div>
         </div></Reveal>
       </div>
     </section>
 
-    {/* Positions */}
+    {/* Open Roles — funnels to the careers site, which owns the live list */}
     <section id="positions" className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 40px" }}>
-      <Reveal><SectionHeader badge="Open Positions" title="Join the Gold Team" subtitle="PM&R and Internal Medicine roles across our anchor markets. All positions include Gold Bar certification, AI documentation tools, and scribe support." /></Reveal>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {positions.map((p,i) => <Reveal key={i} delay={i*0.06}><div role="link" tabIndex={0} style={{ background: C.slate, border: `1px solid ${C.line}`, padding: "24px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, cursor: "pointer", transition: "all 0.3s", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }} onClick={() => nav("contact")} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nav("contact"); } }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.transform = "translateX(4px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(15,23,42,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.transform = "translateX(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,23,42,0.04)"; }}><div><h3 style={{ fontSize: 17, fontWeight: 500, marginBottom: 4, color: C.dark }}>{p.title}</h3><div style={{ fontSize: 14, color: C.muted }}>{p.loc} · {p.type}</div></div><span style={{ color: C.deepGold, fontSize: 14, fontWeight: 500 }}>Apply →</span></div></Reveal>)}
-      </div>
-      <Reveal delay={0.3}><div style={{ textAlign: "center", marginTop: 32 }}><p style={{ color: C.muted, fontSize: 15, marginBottom: 16 }}>Don't see your market? We're expanding.</p><Btn onClick={() => nav("contact")}>Contact Us About New Markets</Btn></div></Reveal>
+      <Reveal><SectionHeader badge="Open Positions" title="Join the Gold Team" subtitle="PM&R and Internal Medicine roles across our markets — every role includes Gold Bar certification, AI documentation tools, and scribe support. Current openings and applications live on our careers site, connected directly to our recruiting team." /></Reveal>
+      <Reveal delay={0.1}><div style={{ background: C.navy, border: `1px solid ${C.line}`, padding: "48px 40px", textAlign: "center" }}>
+        <h3 style={{ fontFamily: F.display, fontSize: 22, fontWeight: 400, marginBottom: 12, color: C.dark }}>See What's Open Right Now</h3>
+        <p style={{ color: C.muted, fontSize: 15, fontWeight: 300, lineHeight: 1.7, maxWidth: 520, margin: "0 auto 28px" }}>Browse current physician openings across our markets and apply in minutes — always up to date, straight from our recruiting team.</p>
+        <Btn primary href={careersUrl("positions")} external>View Open Roles →</Btn>
+        <p style={{ color: C.muted, fontSize: 14, fontWeight: 300, marginTop: 24 }}>Don't see your market? We're always expanding — <a href={careersUrl("new-markets")} target="_blank" rel="noopener noreferrer" style={{ color: C.deepGold, fontWeight: 400 }}>tell us where you are →</a></p>
+      </div></Reveal>
     </section>
 
     {/* Gold Bar */}
@@ -374,9 +389,10 @@ function TechnologyPage({ nav }) {
 }
 
 // ===== CONTACT =====
+// Facility inquiries only. Physician intake now lives on careers.goldpmr.com
+// (GoldOS-connected), so the physician tab and resume upload were removed.
 function ContactPage() {
-  const [type, setType] = useState("facility");
-  const [form, setForm] = useState({ name: "", email: "", org: "", phone: "", message: "", address: "", resume: null });
+  const [form, setForm] = useState({ name: "", email: "", org: "", phone: "", message: "", address: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -395,13 +411,13 @@ function ContactPage() {
     setError(null);
     try {
       const data = new FormData();
-      data.append("type", type);
+      data.append("type", "facility");
       data.append("name", form.name);
       data.append("email", form.email);
       data.append("phone", form.phone);
       data.append("message", form.message);
-      if (type === "facility") { data.append("org", form.org); data.append("address", form.address); }
-      if (type === "physician" && form.resume) data.append("resume", form.resume);
+      data.append("org", form.org);
+      data.append("address", form.address);
       const res = await fetch("/api/contact", { method: "POST", body: data });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -415,12 +431,12 @@ function ContactPage() {
     }
   };
   return <section className="sec-hero" style={{ maxWidth: 800, margin: "0 auto", padding: "140px 40px 100px" }}>
-    <Reveal><SectionHeader badge="Get in Touch" title="Start a Conversation" subtitle="Facility exploring a physician partnership or physiatrist exploring your next chapter — we're ready." /></Reveal>
+    <Reveal><SectionHeader badge="Get in Touch" title="Start a Conversation" subtitle="Exploring a physician partnership for your facility? We're ready to talk." /></Reveal>
     <Reveal delay={0.1}>{!submitted ? <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 40, boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>{[{v:"facility",l:"I'm a Facility"},{v:"physician",l:"I'm a Physician"}].map(t => <button key={t.v} onClick={() => setType(t.v)} style={{ flex: 1, padding: "12px 20px", fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all 0.3s", border: `1px solid ${type===t.v?C.gold:"rgba(0,0,0,0.12)"}`, background: type===t.v?C.gold:"transparent", color: type===t.v?C.dark:C.muted, fontFamily: F.body }}>{t.l}</button>)}</div>
-      <div className="grid-contact" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: "0 20px" }}><Input label="Full Name" value={form.name} onChange={v => set("name",v)} placeholder="Dr. Jane Smith" /><Input label="Email" type="email" value={form.email} onChange={v => set("email",v)} placeholder="jane@example.com" />{type==="facility" ? <Input label="Facility / Organization" value={form.org} onChange={v => set("org",v)} /> : <div style={{ marginBottom: 20, minWidth: 0 }}><label style={{ display: "block", fontSize: 13, fontWeight: 500, color: C.mutedLight, marginBottom: 6 }}>Resume / CV</label><label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "12px 16px", background: "#FFFFFF", border: `1px solid ${C.line}`, fontSize: 15, fontFamily: F.body, cursor: "pointer", transition: "border-color 0.3s" }} onMouseEnter={e => e.currentTarget.style.borderColor = C.deepGold} onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(0,0,0,0.12)"}><span style={{ color: form.resume ? C.dark : C.muted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, minWidth: 0 }}>{form.resume ? form.resume.name : "Choose file (PDF, DOC, DOCX)"}</span><span style={{ color: C.deepGold, fontSize: 13, fontWeight: 500, marginLeft: 12, flexShrink: 0 }}>Upload</span><input type="file" accept=".pdf,.doc,.docx" onChange={e => set("resume", e.target.files[0] || null)} style={{ display: "none" }} /></label></div>}<Input label="Phone" type="tel" value={form.phone} onChange={v => set("phone",v)} placeholder="(555) 123-4567" /></div>
-      {type === "facility" && <Input label="Address" value={form.address} onChange={v => set("address",v)} placeholder="123 Main St, City, State ZIP" />}
-      <Input label={type==="facility"?"Tell us about your facility":"Tell us about your career goals"} type="textarea" value={form.message} onChange={v => set("message",v)} />
+      <div style={{ marginBottom: 28, padding: "14px 18px", background: C.navy, border: `1px solid ${C.line}`, fontSize: 14, fontWeight: 300, color: C.mutedLight, lineHeight: 1.6 }}>Physician looking to join Gold? Head to <a href={careersUrl("contact-redirect")} target="_blank" rel="noopener noreferrer" style={{ color: C.deepGold, fontWeight: 400 }}>careers.goldpmr.com →</a> to see open roles and apply.</div>
+      <div className="grid-contact" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: "0 20px" }}><Input label="Full Name" value={form.name} onChange={v => set("name",v)} placeholder="Jane Smith" /><Input label="Email" type="email" value={form.email} onChange={v => set("email",v)} placeholder="jane@example.com" /><Input label="Facility / Organization" value={form.org} onChange={v => set("org",v)} /><Input label="Phone" type="tel" value={form.phone} onChange={v => set("phone",v)} placeholder="(555) 123-4567" /></div>
+      <Input label="Address" value={form.address} onChange={v => set("address",v)} placeholder="123 Main St, City, State ZIP" />
+      <Input label="Tell us about your facility" type="textarea" value={form.message} onChange={v => set("message",v)} />
       <Btn primary full onClick={handleSubmit} style={{ marginTop: 8 }}>{submitting ? "Submitting..." : "Submit Inquiry →"}</Btn>
       {error && <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: C.red, fontSize: 13 }}>{error}</div>}
     </div> : <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 56, textAlign: "center", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}><div style={{ fontSize: 48, marginBottom: 16 }}>✓</div><h3 style={{ fontSize: 24, fontWeight: 500, marginBottom: 12, color: C.dark }}>Thank You</h3><p style={{ color: C.muted, fontSize: 16, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>We've received your inquiry. A member of the Gold team will reach out within one business day.</p></div>}</Reveal>
@@ -491,7 +507,7 @@ export default function App() {
 
     {page === "home" && <HomePage nav={nav} />}
     {page === "facilities" && <FacilitiesPage nav={nav} />}
-    {page === "physicians" && <PhysiciansPage nav={nav} />}
+    {page === "physicians" && <PhysiciansPage />}
     {page === "technology" && <TechnologyPage nav={nav} />}
     {page === "contact" && <ContactPage />}
 
@@ -501,7 +517,7 @@ export default function App() {
         and the two result panels this brings ink navy to roughly the kit's 22%. */}
     <footer style={{ background: C.dark }}><div className="footer-inner" style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 40px 32px" }}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 40, marginBottom: 40 }}>
       <div><img src="/GOLD-lockup-on-dark.png" alt="Gold PM&R — Post-Acute Rehab Specialists" width={140} height={44} style={{ height: 44, width: "auto", display: "block", marginBottom: 24 }} /><p style={{ color: "rgba(255,255,255,0.72)", fontSize: 14, fontWeight: 300, lineHeight: 1.6 }}>Setting the standard in post-acute medical management.</p><p style={{ color: "rgba(255,255,255,0.72)", fontSize: 14, fontWeight: 300, marginTop: 8 }}>NV · CA · CO · AZ · OR · TX</p></div>
-      {[{t:"Company",ls:[{l:"About",p:"home"},{l:"Technology",p:"technology"},{l:"Careers",p:"physicians"},{l:"Contact",p:"contact"}]},{t:"Facilities",ls:[{l:"Partnership",p:"facilities"},{l:"ROI Calculator",p:"facilities"},{l:"Compliance Quiz",p:"facilities"},{l:"Case Studies",p:"facilities"}]},{t:"Physicians",ls:[{l:"Open Positions",p:"physicians"},{l:"Compensation",p:"physicians"},{l:"Gold Bar",p:"physicians"},{l:"Culture",p:"physicians"}]}].map((col,i) => <div key={i}><div style={{ fontWeight: 300, fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.goldLight, marginBottom: 14 }}>{col.t}</div>{col.ls.map(link => <div key={link.l}><button onClick={() => nav(link.p)} style={{ color: "rgba(255,255,255,0.72)", background: "none", border: "none", fontFamily: F.body, fontSize: 14, fontWeight: 300, cursor: "pointer", transition: "color 0.3s", textAlign: "left", padding: "6px 0", minHeight: 32 }} onMouseEnter={e => e.currentTarget.style.color = C.goldLight} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.72)"}>{link.l}</button></div>)}</div>)}
+      {[{t:"Company",ls:[{l:"About",p:"home"},{l:"Technology",p:"technology"},{l:"Careers",href:careersUrl("footer-careers")},{l:"Contact",p:"contact"}]},{t:"Facilities",ls:[{l:"Partnership",p:"facilities"},{l:"ROI Calculator",p:"facilities"},{l:"Compliance Quiz",p:"facilities"},{l:"Case Studies",p:"facilities"}]},{t:"Physicians",ls:[{l:"Open Positions",href:careersUrl("footer-positions")},{l:"Compensation",p:"physicians"},{l:"Gold Bar",p:"physicians"},{l:"Culture",p:"physicians"}]}].map((col,i) => { const fstyle = { color: "rgba(255,255,255,0.72)", background: "none", border: "none", fontFamily: F.body, fontSize: 14, fontWeight: 300, cursor: "pointer", transition: "color 0.3s", textAlign: "left", padding: "6px 0", minHeight: 32, textDecoration: "none", display: "inline-block" }; const enter = e => e.currentTarget.style.color = C.goldLight; const leave = e => e.currentTarget.style.color = "rgba(255,255,255,0.72)"; return <div key={i}><div style={{ fontWeight: 300, fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.goldLight, marginBottom: 14 }}>{col.t}</div>{col.ls.map(link => <div key={link.l}>{link.href ? <a href={link.href} target="_blank" rel="noopener noreferrer" style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</a> : <button onClick={() => nav(link.p)} style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</button>}</div>)}</div>; })}
     </div><div style={{ borderTop: "1px solid rgba(255,255,255,0.14)", paddingTop: 20, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 300 }}>© 2026 Gold Physical Medicine and Rehabilitation, PC & Gold Management Services, LLC</span><span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 300 }}>Physician-Led · Technology-Forward · Outcome-Driven</span></div></div></footer>
   </div>;
 }

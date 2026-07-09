@@ -52,7 +52,7 @@ const sendNotification = async ({ fields }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Gold PM&R <noreply@goldpmr.com>',
+        from: 'Gold PM&R <noreply@mail.goldpmr.com>',
         to: NOTIFY_TO,
         reply_to: fields.email,
         subject: `New facility inquiry from ${fields.name || 'unknown'}`,

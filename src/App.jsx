@@ -450,14 +450,37 @@ function ContactPage() {
 // is per-page for shareability (the shell HTML is JS-rendered, so this is what a
 // browser tab / link preview shows).
 const PATHS = { home: "/", facilities: "/facilities", physicians: "/physicians", technology: "/technology", contact: "/contact" };
-const TITLES = {
-  home: "Gold PM&R — Post-Acute Rehab Specialists",
-  facilities: "For Facilities — Gold PM&R",
-  physicians: "For Physicians — Gold PM&R",
-  technology: "GoldOS Platform — Gold PM&R",
-  contact: "Get in Touch — Gold PM&R",
+const ORIGIN = "https://www.goldpmr.com";
+// Per-route SEO metadata. index.html carries homepage-framed static defaults for
+// non-JS crawlers and social scrapers; these update title/description/canonical/OG
+// on the rendered DOM, which JS-rendering crawlers (Google) read per route.
+const META = {
+  home: { title: "Gold PM&R — Post-Acute Rehab Specialists", desc: "Gold PM&R is a physician-owned rehabilitation medicine group delivering comprehensive, high-quality PM&R across the post-acute continuum — inpatient rehab, ARU, SNF, and LTAC." },
+  facilities: { title: "For Facilities — Gold PM&R", desc: "Physician partnership that raises CMI, keeps 100% CMS compliance, and delivers post-acute outcomes that become your competitive advantage." },
+  physicians: { title: "For Physicians — Gold PM&R", desc: "PM&R and Internal Medicine physicians co-managing every patient — 70% compensation, AI documentation, personalized schedules, and a paid leadership ladder." },
+  technology: { title: "GoldOS Platform — Gold PM&R", desc: "GoldOS is the intelligence layer for post-acute medical management: AI documentation, real-time compliance tracking, CMG optimization, and outcome analytics." },
+  contact: { title: "Get in Touch — Gold PM&R", desc: "Facility exploring a physician partnership? Start a conversation with the Gold PM&R team." },
 };
 const pageFromPath = (path) => Object.keys(PATHS).find(k => PATHS[k] === path) || "home";
+
+// Reflect the active route into the document head so JS-rendering crawlers get
+// per-page title/description/canonical/OG. Social scrapers (no JS) fall back to
+// the homepage-framed statics in index.html — that's the Tier-1 boundary.
+function applyMeta(pageKey) {
+  const m = META[pageKey] || META.home;
+  const url = ORIGIN + (PATHS[pageKey] || "/");
+  document.title = m.title;
+  const set = (sel, attr, val) => { const el = document.head.querySelector(sel); if (el) el.setAttribute(attr, val); };
+  set('meta[name="description"]', "content", m.desc);
+  set('meta[property="og:title"]', "content", m.title);
+  set('meta[property="og:description"]', "content", m.desc);
+  set('meta[property="og:url"]', "content", url);
+  set('meta[name="twitter:title"]', "content", m.title);
+  set('meta[name="twitter:description"]', "content", m.desc);
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) { link = document.createElement("link"); link.setAttribute("rel", "canonical"); document.head.appendChild(link); }
+  link.setAttribute("href", url);
+}
 
 export default function App() {
   const [page, setPage] = useState(() => (typeof window === "undefined" ? "home" : pageFromPath(window.location.pathname)));
@@ -470,10 +493,10 @@ export default function App() {
   useEffect(() => {
     const canonical = PATHS[page] || "/";
     if (window.location.pathname !== canonical) window.history.replaceState({ page }, "", canonical);
-    document.title = TITLES[page] || TITLES.home;
+    applyMeta(page);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const onPop = () => setPage(pageFromPath(window.location.pathname));
+    const onPop = () => { const p = pageFromPath(window.location.pathname); setPage(p); applyMeta(p); };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -482,7 +505,7 @@ export default function App() {
     setMm(false);
     const path = PATHS[p] || "/";
     if (window.location.pathname !== path) window.history.pushState({ page: p }, "", path);
-    document.title = TITLES[p] || TITLES.home;
+    applyMeta(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   const links = [{l:"About",p:"home"},{l:"Facilities",p:"facilities"},{l:"Physicians",p:"physicians"},{l:"Technology",p:"technology"}];

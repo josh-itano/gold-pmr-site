@@ -10,6 +10,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
     <title>Gold PM&R — Post-Acute Rehab Specialists</title>
+
+    <!-- SEO — homepage-framed defaults. The app updates title/description/canonical
+         per route on the client (App.jsx); these static values are what non-JS
+         crawlers and social scrapers see, so they describe the site as a whole. -->
+    <meta name="description" content="Gold PM&R is a physician-owned rehabilitation medicine group delivering comprehensive, high-quality PM&R across the post-acute continuum — inpatient rehab, ARU, SNF, and LTAC." />
+    <!-- Canonical is set per-route by the app (App.jsx), not hardcoded here: a
+         static canonical in the shared shell would wrongly mark every route a
+         duplicate of home for non-JS crawlers. -->
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gold PM&R" />
+    <meta property="og:title" content="Gold PM&R — Post-Acute Rehab Specialists" />
+    <meta property="og:description" content="A physician-owned rehabilitation medicine group delivering comprehensive PM&R across the post-acute continuum — IRF, ARU, SNF, and LTAC." />
+    <meta property="og:url" content="https://www.goldpmr.com/" />
+    <meta property="og:image" content="https://www.goldpmr.com/og-cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Gold PM&R — Post-Acute Rehab Specialists" />
+    <meta name="twitter:description" content="A physician-owned rehabilitation medicine group delivering comprehensive PM&R across the post-acute continuum — IRF, ARU, SNF, and LTAC." />
+    <meta name="twitter:image" content="https://www.goldpmr.com/og-cover.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MedicalOrganization",
+        "name": "Gold Physical Medicine and Rehabilitation",
+        "alternateName": "Gold PM&R",
+        "url": "https://www.goldpmr.com/",
+        "logo": "https://www.goldpmr.com/GOLD-lockup-on-light.png",
+        "image": "https://www.goldpmr.com/og-cover.png",
+        "description": "A physician-owned rehabilitation medicine group delivering comprehensive, high-quality PM&R across the post-acute continuum — inpatient rehab (IRF), acute rehab units (ARU), skilled nursing (SNF), and long-term acute care (LTAC).",
+        "areaServed": ["Nevada", "California", "Colorado", "Arizona", "Oregon", "Texas"]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -444,12 +444,47 @@ function ContactPage() {
 }
 
 // ===== APP =====
+// Client-side routing. Each page is a real URL so deep links, back/forward, and
+// sharing work; unknown paths resolve to home. Requires the SPA rewrite in
+// vercel.json so the server hands every non-/api path to this app. document.title
+// is per-page for shareability (the shell HTML is JS-rendered, so this is what a
+// browser tab / link preview shows).
+const PATHS = { home: "/", facilities: "/facilities", physicians: "/physicians", technology: "/technology", contact: "/contact" };
+const TITLES = {
+  home: "Gold PM&R — Post-Acute Rehab Specialists",
+  facilities: "For Facilities — Gold PM&R",
+  physicians: "For Physicians — Gold PM&R",
+  technology: "GoldOS Platform — Gold PM&R",
+  contact: "Get in Touch — Gold PM&R",
+};
+const pageFromPath = (path) => Object.keys(PATHS).find(k => PATHS[k] === path) || "home";
+
 export default function App() {
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState(() => (typeof window === "undefined" ? "home" : pageFromPath(window.location.pathname)));
   const [scrolled, setScrolled] = useState(false);
   const [mm, setMm] = useState(false);
   useEffect(() => { const h = () => setScrolled(window.scrollY > 60); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
-  const nav = useCallback((p) => { setPage(p); setMm(false); window.scrollTo({ top: 0, behavior: "smooth" }); }, []);
+  // Sync page -> URL + title. On first load, canonicalize an unknown path to the
+  // resolved page's URL (e.g. /bogus -> /) with replaceState so we don't add a
+  // history entry. Back/forward is handled by popstate.
+  useEffect(() => {
+    const canonical = PATHS[page] || "/";
+    if (window.location.pathname !== canonical) window.history.replaceState({ page }, "", canonical);
+    document.title = TITLES[page] || TITLES.home;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const onPop = () => setPage(pageFromPath(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+  const nav = useCallback((p) => {
+    setPage(p);
+    setMm(false);
+    const path = PATHS[p] || "/";
+    if (window.location.pathname !== path) window.history.pushState({ page: p }, "", path);
+    document.title = TITLES[p] || TITLES.home;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   const links = [{l:"About",p:"home"},{l:"Facilities",p:"facilities"},{l:"Physicians",p:"physicians"},{l:"Technology",p:"technology"}];
 
   return <div style={{ background: C.white, color: C.dark, fontFamily: F.body, fontWeight: 300, minHeight: "100vh", overflowX: "hidden" }}>

@@ -4,6 +4,7 @@ import {
   Bot, CalendarDays, GraduationCap, HandCoins, Stethoscope,
   BrainCircuit, ChartColumn, ShieldAlert, ChartLine, ReceiptText, LayoutDashboard,
 } from "lucide-react";
+import { LOCALITIES, SETTINGS, CATEGORIES, RATE_CONFIG, estimate, categoryShares } from "./data/compRates";
 
 // Brand Kit — Edition 01 · 2026. Page 05 (Color) + page 12 (UI color roles).
 const C = {
@@ -97,6 +98,34 @@ function AnimNum({ target, suffix = "" }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
+// AnimNum counts up once toward a static integer; the comp estimator's payoff
+// figure changes with every input, so it eases from the previous value to the
+// new one instead. Under reduced motion it renders the final value immediately.
+function useCountUp(value, duration = 500) {
+  const reduced = usePrefersReducedMotion();
+  const [display, setDisplay] = useState(value);
+  const prev = useRef(value);
+  useEffect(() => {
+    const from = prev.current;
+    prev.current = value;
+    if (from === value) return;
+    // All setDisplay calls happen inside rAF callbacks, never synchronously in
+    // the effect body. Reduced motion collapses the tween to a single frame.
+    const dur = reduced ? 0 : duration;
+    const t0 = performance.now();
+    let raf;
+    const tick = (t) => {
+      const p = dur === 0 ? 1 : Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(from + (value - from) * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, reduced, duration]);
+  return reduced ? value : display;
+}
+
 // Eyebrow — kit type scale: 13/300, uppercase, letterspaced. Text is Deep Gold;
 // the dot is the one decorative gold element.
 // Ground is White, not the gold tint: Deep Gold over goldSoft-over-Mist measures
@@ -156,7 +185,7 @@ function HomePage({ nav }) {
         <Reveal><Badge>Physician-Led · Technology-Forward · Outcome-Driven</Badge></Reveal>
         <Reveal delay={0.1}><h1 className="hero-title" style={{ fontFamily: F.display, fontSize: "min(56px, 8vw)", fontWeight: 500, lineHeight: 1.1, letterSpacing: -0.5, margin: "28px 0", color: C.dark }}>The New Standard in<br/>Inpatient Rehabilitation</h1></Reveal>
         <Reveal delay={0.2}><p style={{ fontSize: 18, fontWeight: 300, color: C.muted, maxWidth: 640, margin: "0 auto 44px", lineHeight: 1.8 }}>Gold PM&R delivers integrated co-management of inpatient rehab patients—combining Physical Medicine & Rehabilitation with Internal Medicine through our providers or in collaboration with your existing physician teams—supported by proprietary technology that produces measurably superior outcomes for facilities and their patients.</p></Reveal>
-        <Reveal delay={0.3}><div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}><Btn primary onClick={() => nav("facilities")}>For Facilities →</Btn><Btn onClick={() => nav("physicians")}>For Physicians →</Btn></div></Reveal>
+        <Reveal delay={0.3}><div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}><Btn primary onClick={() => nav("facilities")}>For Facilities →</Btn><Btn onClick={() => nav("physicians")}>For Clinicians →</Btn></div></Reveal>
       </div>
     </section>
     {/* Ink navy field. Gold numerals are 7.4:1 here; on white they were 2.4:1
@@ -170,7 +199,7 @@ function HomePage({ nav }) {
     <section className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 40px" }}>
       <Reveal><SectionHeader badge="Who We Serve" title="Two Paths. One Standard." /></Reveal>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 24 }}>
-        {[{p:"facilities",badge:"For Facilities",h:"Higher Reimbursement. Zero Compliance Risk. Better Outcomes.",d:"Gold physicians maximize CMI scores, maintain 100% CMS compliance, and deliver outcomes that become your strongest marketing asset.",cta:"Explore Partnership →"},{p:"physicians",badge:"For Physicians",h:"Best Tools. Best Support. Best Career in Post-Acute Medicine.",d:"PM&R and Internal Medicine physicians co-managing every patient. 70% compensation with documentation support that lets you earn more per hour. Personalized schedules, paid leadership roles, and a mission worth showing up for.",cta:"Explore Careers →"}].map((c,i) => <Reveal key={i} delay={i*0.1} style={{ height: "100%" }}><div role="link" tabIndex={0} style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 48, cursor: "pointer", transition: "all 0.4s", boxShadow: "0 1px 4px rgba(15,23,42,0.04)", height: "100%", display: "flex", flexDirection: "column" }} onClick={() => nav(c.p)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nav(c.p); } }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(15,23,42,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,23,42,0.04)"; }}><div style={{ fontSize: 13, fontWeight: 300, letterSpacing: 3, textTransform: "uppercase", color: C.deepGold, marginBottom: 20 }}>{c.badge}</div><h3 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 400, lineHeight: 1.3, marginBottom: 16, color: C.dark }}>{c.h}</h3><p style={{ color: C.muted, fontSize: 15, fontWeight: 300, lineHeight: 1.7, marginBottom: 24, flex: 1 }}>{c.d}</p><span style={{ color: C.deepGold, fontSize: 15, fontWeight: 400 }}>{c.cta}</span></div></Reveal>)}
+        {[{p:"facilities",badge:"For Facilities",h:"Higher Reimbursement. Zero Compliance Risk. Better Outcomes.",d:"Gold physicians maximize CMI scores, maintain 100% CMS compliance, and deliver outcomes that become your strongest marketing asset.",cta:"Explore Partnership →"},{p:"physicians",badge:"For Clinicians",h:"Best Tools. Best Support. Best Career in Post-Acute Medicine.",d:"PM&R and Internal Medicine physicians co-managing every patient. 70% compensation with documentation support that lets you earn more per hour. Personalized schedules, paid leadership roles, and a mission worth showing up for.",cta:"Explore Careers →"}].map((c,i) => <Reveal key={i} delay={i*0.1} style={{ height: "100%" }}><div role="link" tabIndex={0} style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 48, cursor: "pointer", transition: "all 0.4s", boxShadow: "0 1px 4px rgba(15,23,42,0.04)", height: "100%", display: "flex", flexDirection: "column" }} onClick={() => nav(c.p)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); nav(c.p); } }} onMouseEnter={e => { e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(15,23,42,0.08)"; }} onMouseLeave={e => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(15,23,42,0.04)"; }}><div style={{ fontSize: 13, fontWeight: 300, letterSpacing: 3, textTransform: "uppercase", color: C.deepGold, marginBottom: 20 }}>{c.badge}</div><h3 style={{ fontFamily: F.display, fontSize: 26, fontWeight: 400, lineHeight: 1.3, marginBottom: 16, color: C.dark }}>{c.h}</h3><p style={{ color: C.muted, fontSize: 15, fontWeight: 300, lineHeight: 1.7, marginBottom: 24, flex: 1 }}>{c.d}</p><span style={{ color: C.deepGold, fontSize: 15, fontWeight: 400 }}>{c.cta}</span></div></Reveal>)}
       </div>
     </section>
     <section style={{ background: C.navy, borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}` }}>
@@ -278,14 +307,171 @@ function FacilitiesPage({ nav }) {
 }
 
 // ===== PHYSICIANS =====
-function PhysiciansPage() {
-  const [ppd, setPpd] = useState(30);
-  const [dpw, setDpw] = useState("7");
-  const [wpy, setWpy] = useState("26");
-  const encounters = ppd * parseInt(dpw) * parseInt(wpy);
-  const comp70 = Math.round(encounters * 78 * 0.70);
-  const withLift = Math.round(encounters * 88 * 0.70);
+// ===== COMP ESTIMATOR =====
+// Rebuilt on src/data/compRates.js — CY2026 PFS allowed amounts by Medicare
+// locality, calibrated against Gold's Jan–Jul 2026 remittance extract. The
+// estimator's job is to show the derivation, not just a total: estimate()
+// returns every intermediate and the payoff panel renders them as a ledger.
+const CAT_UNIT = { initial: "admission", subsequent: "progress note", discharge: "discharge" };
+const copyLevels = (l) => ({ initial: [...l.initial], subsequent: [...l.subsequent], discharge: [...l.discharge] });
+const fmtUSD = (v) => `$${Math.round(v).toLocaleString("en-US")}`;
+const fmtCents = (v) => `$${v.toFixed(2)}`;
+const compLabel = { display: "block", fontSize: 13, fontWeight: 400, color: C.mutedLight, marginBottom: 6 };
+const compField = { width: "100%", padding: "12px 16px", minHeight: 44, background: C.white, border: `1px solid ${C.line}`, color: C.dark, fontSize: 15, fontWeight: 300, fontFamily: F.body, transition: "border-color 0.3s" };
 
+function CompRange({ id, label, value, min, max, onChange }) {
+  return <div style={{ marginBottom: 20 }}>
+    <label htmlFor={id} style={{ ...compLabel, display: "flex", justifyContent: "space-between", gap: 12 }}><span>{label}</span><span style={{ fontFamily: F.display, fontWeight: 400, fontSize: 14, color: C.dark }}>{value}</span></label>
+    <input id={id} type="range" min={min} max={max} value={value} onChange={(e) => onChange(parseInt(e.target.value))} style={{ width: "100%", accentColor: C.gold, display: "block" }} />
+  </div>;
+}
+
+function CompEstimator() {
+  const [role, setRole] = useState("md");
+  const [localityId, setLocalityId] = useState(LOCALITIES[0].id);
+  const [settingId, setSettingId] = useState(SETTINGS[0].id);
+  const [levels, setLevels] = useState(() => copyLevels(SETTINGS[0].levels));
+  const [perDay, setPerDay] = useState(RATE_CONFIG.DEFAULT_PER_DAY);
+  const [daysWeek, setDaysWeek] = useState(RATE_CONFIG.DEFAULT_DAYS_WEEK);
+  const [weeksYear, setWeeksYear] = useState(RATE_CONFIG.DEFAULT_WEEKS_YEAR);
+
+  const locality = LOCALITIES.find((l) => l.id === localityId);
+  const setting = SETTINGS.find((s) => s.id === settingId);
+  // Inputs hold whatever was typed (including "" mid-edit); the math sees
+  // clamped numbers. normalize() in the data module scales shares that don't
+  // total 100, so nothing typed is ever blocked or rewritten.
+  const nums = (arr) => arr.map((v) => Math.max(0, Number(v) || 0));
+  const est = estimate({ locality, role, alos: setting.alos, levels: { initial: nums(levels.initial), subsequent: nums(levels.subsequent), discharge: nums(levels.discharge) }, perDay, daysWeek, weeksYear });
+  const shares = categoryShares(setting.alos);
+  const animAnnual = useCountUp(est.annual);
+  const setLevel = (catId, k, v) => setLevels((prev) => ({ ...prev, [catId]: prev[catId].map((x, i) => (i === k ? v : x)) }));
+  const states = [...new Set(LOCALITIES.map((l) => l.state))];
+  const fieldFocus = (e) => e.target.style.borderColor = C.deepGold;
+  const fieldBlur = (e) => e.target.style.borderColor = C.line;
+
+  return <>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 32 }}>
+      {/* Inputs */}
+      <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: "40px 36px", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}>
+        <h3 style={{ fontSize: 18, fontWeight: 500, marginBottom: 24, color: C.dark }}>Your Practice Profile</h3>
+
+        <div style={{ marginBottom: 20 }}>
+          <span style={compLabel} id="comp-role-label">Role</span>
+          <div role="group" aria-labelledby="comp-role-label" style={{ display: "flex" }}>
+            {[{ id: "md", label: "Physician" }, { id: "app", label: "NP or PA" }].map((r, i) => { const on = role === r.id; return (
+              <button key={r.id} onClick={() => setRole(r.id)} aria-pressed={on} style={{ flex: 1, minHeight: 44, fontFamily: F.body, fontSize: 15, cursor: "pointer", transition: "all 0.3s", background: on ? C.white : C.navy, color: on ? C.deepGold : C.mutedLight, fontWeight: on ? 500 : 300, border: `1px solid ${on ? C.deepGold : C.line}`, marginLeft: i === 0 ? 0 : -1, position: on ? "relative" : "static" }}>{r.label}</button>); })}
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 20 }}>
+          <label htmlFor="comp-locality" style={compLabel}>Where you practice</label>
+          <select id="comp-locality" value={localityId} onChange={(e) => setLocalityId(e.target.value)} style={{ ...compField, cursor: "pointer" }} onFocus={fieldFocus} onBlur={fieldBlur}>
+            {states.map((st) => <optgroup key={st} label={st}>{LOCALITIES.filter((l) => l.state === st).map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}</optgroup>)}
+          </select>
+          <div style={{ fontSize: 12, fontWeight: 300, color: C.muted, marginTop: 6 }}>Medicare pays by locality.</div>
+        </div>
+
+        <fieldset style={{ border: "none", padding: 0, margin: "0 0 20px" }}>
+          <legend style={{ ...compLabel, padding: 0 }}>Care setting</legend>
+          <div style={{ display: "grid", gap: 8 }}>
+            {SETTINGS.map((s) => { const on = settingId === s.id; return (
+              <label key={s.id} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", minHeight: 44, cursor: "pointer", background: C.white, border: `1px solid ${on ? C.deepGold : C.line}`, transition: "border-color 0.3s", boxSizing: "border-box" }}>
+                <input type="radio" name="comp-setting" value={s.id} checked={on} onChange={() => { setSettingId(s.id); setLevels(copyLevels(s.levels)); }} style={{ accentColor: C.deepGold, marginTop: 4, flexShrink: 0 }} />
+                <span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: C.dark }}>{s.label}</span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 300, color: C.muted, marginTop: 2 }}>{s.blurb} · typical stay {s.alos} days</span>
+                </span>
+              </label>); })}
+          </div>
+        </fieldset>
+
+        <CompRange id="comp-perday" label="Patients per day" value={perDay} min={4} max={40} onChange={setPerDay} />
+        <CompRange id="comp-daysweek" label="Days per week" value={daysWeek} min={1} max={7} onChange={setDaysWeek} />
+        <CompRange id="comp-weeksyear" label="Weeks per year" value={weeksYear} min={20} max={52} onChange={setWeeksYear} />
+      </div>
+
+      {/* Payoff */}
+      <div style={{ background: C.dark, padding: "40px 36px", display: "flex", flexDirection: "column" }}>
+        <h3 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 400, marginBottom: 16, color: C.white }}>How the Number Is Built</h3>
+        {[
+          ["Visits per year", est.encounters.toLocaleString("en-US")],
+          ["Average Medicare allowed per visit", fmtCents(est.weightedAllowed)],
+          ["Adjusted for payer mix", fmtCents(est.afterPayer)],
+          ["Net of denials and uncollected balances", fmtCents(est.perEncounter)],
+          ["Collections you generate", fmtUSD(est.collections)],
+          ["Your share", `${Math.round(est.compRate * 100)}%`],
+        ].map(([l, v]) => (
+          <div key={l} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.14)" }}>
+            <span style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)" }}>{l}</span>
+            <span style={{ fontFamily: F.display, fontSize: 15, fontWeight: 400, color: C.white, whiteSpace: "nowrap" }}>{v}</span>
+          </div>
+        ))}
+        <div style={{ margin: "24px 0" }}>
+          <div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)", marginBottom: 4 }}>Estimated annual compensation</div>
+          <div style={{ fontFamily: F.display, fontSize: 44, fontWeight: 300, color: C.gold, lineHeight: 1.1 }}>{fmtUSD(animAnnual)}</div>
+          <div style={{ fontSize: 14, fontWeight: 300, color: "rgba(255,255,255,0.72)", marginTop: 8 }}>{fmtUSD(animAnnual / 12)} per month</div>
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 20 }}>This is an estimate, not an offer. Actual compensation depends on the facility, its payer mix, your documentation, and the terms of an executed agreement. Nothing here creates a guarantee of earnings or an employment relationship.</div>
+        <div style={{ marginTop: "auto" }}><Btn primary full href={careersUrl("comp-estimator")} external>Explore Open Roles →</Btn></div>
+      </div>
+    </div>
+
+    {/* Visit mix */}
+    <div style={{ marginTop: 32, background: C.slate, border: `1px solid ${C.line}`, padding: "36px", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 8 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 500, color: C.dark }}>Your Visit Mix</h3>
+        <button onClick={() => setLevels(copyLevels(setting.levels))} style={{ minHeight: 44, padding: "8px 20px", background: "transparent", border: `1px solid ${C.line}`, color: C.dark, fontFamily: F.body, fontSize: 14, fontWeight: 400, cursor: "pointer", transition: "all 0.3s" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; }}>Reset to typical</button>
+      </div>
+      <p style={{ fontSize: 14, fontWeight: 300, color: C.muted, lineHeight: 1.7, maxWidth: 720, marginBottom: 20 }}>A {setting.alos}-day stay produces one admission, {setting.alos - 2} progress notes and one discharge — so the split follows length of stay. The level percentages within each visit type are yours to adjust.</p>
+
+      <div aria-hidden="true" style={{ display: "flex", height: 12, marginBottom: 10, background: C.navy }}>
+        <div style={{ width: `${shares.initial * 100}%`, background: C.dark, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
+        <div style={{ width: `${shares.subsequent * 100}%`, background: C.gold, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
+        <div style={{ width: `${shares.discharge * 100}%`, background: C.goldLight, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
+      </div>
+      <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 13, fontWeight: 300, color: C.mutedLight, marginBottom: 28 }}>
+        {[["Admissions", C.dark, shares.initial], ["Progress notes", C.gold, shares.subsequent], ["Discharges", C.goldLight, shares.discharge]].map(([l, col, sh]) => (
+          <span key={l} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: col, display: "inline-block" }} />{l} {Math.round(sh * 100)}%</span>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
+        {CATEGORIES.map((cat) => {
+          const raw = levels[cat.id];
+          const sum = raw.reduce((a, v) => a + (Number(v) || 0), 0);
+          return (
+            <div key={cat.id} style={{ border: `1px solid ${C.line}`, background: C.white, padding: 24, display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+                <h4 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 500, color: C.dark }}>{cat.title}</h4>
+                <span style={{ fontSize: 13, fontWeight: 300, color: C.mutedLight, whiteSpace: "nowrap" }}>{Math.round(shares[cat.id] * 100)}% of visits</span>
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 300, color: C.muted, marginTop: 2, marginBottom: cat.note ? 2 : 14 }}>{cat.perStay}</div>
+              {cat.note && <div style={{ fontSize: 13, fontWeight: 300, color: C.muted, marginBottom: 14 }}>{cat.note}</div>}
+              {cat.codes.map((c, k) => (
+                <div key={c.code} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto auto", alignItems: "center", gap: 10, padding: "8px 0", borderTop: `1px solid ${C.line}` }}>
+                  <span style={{ fontFamily: F.display, fontSize: 14, fontWeight: 400, color: C.dark }}>{c.code}</span>
+                  <span style={{ fontSize: 13, fontWeight: 300, color: C.muted }}>{c.level}</span>
+                  <span style={{ fontFamily: F.display, fontSize: 14, fontWeight: 400, color: C.dark, whiteSpace: "nowrap" }}>{fmtCents(est.rates[c.idx])}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <input type="number" min={0} max={100} value={raw[k]} onChange={(e) => setLevel(cat.id, k, e.target.value)} aria-label={`${cat.title} — ${c.level} — percent of visits`} style={{ width: 56, minHeight: 44, padding: "0 8px", textAlign: "right", background: C.white, border: `1px solid ${C.line}`, color: C.dark, fontSize: 14, fontWeight: 300, fontFamily: F.body, boxSizing: "border-box", transition: "border-color 0.3s" }} onFocus={fieldFocus} onBlur={fieldBlur} />
+                    <span style={{ fontSize: 13, fontWeight: 300, color: C.mutedLight }} aria-hidden="true">%</span>
+                  </span>
+                </div>
+              ))}
+              {sum !== 100 && <div style={{ fontSize: 12, fontWeight: 300, color: C.mutedLight, padding: "6px 0" }}>Totals {+sum.toFixed(1)}% — shares are scaled proportionally, so the estimate still works.</div>}
+              <div style={{ marginTop: "auto", paddingTop: 12, borderTop: `1px solid ${C.line}`, fontSize: 13, fontWeight: 300, color: C.mutedLight }}>Average {CAT_UNIT[cat.id]} pays <span style={{ fontFamily: F.display, fontWeight: 400, color: C.dark }}>{fmtCents(est.categoryAverages[cat.id])}</span></div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ fontSize: 12, fontWeight: 300, color: C.muted, marginTop: 20 }}>Rates are calculated from published CY2026 relative value units and the geographic practice cost indices for your Medicare locality.</div>
+    </div>
+
+    <p style={{ fontSize: 14, fontWeight: 300, color: C.mutedLight, lineHeight: 1.7, maxWidth: 820, margin: "24px auto 0", textAlign: "center" }}>The level mix describes a patient population over time. Coding level for any single encounter is determined by medical decision-making, or by documented time where the code allows it — never by a target or an average.</p>
+  </>;
+}
+
+function PhysiciansPage() {
   const cards = [
     { icon: Bot, title: "AI-Powered Practice", desc: "Documentation co-pilot built for inpatient rehab eliminates 60–70% of documentation time. Automated billing. Compliance watchdog. Focus on patients." },
     { icon: CalendarDays, title: "Your Schedule, Your Life", desc: "Personalized schedule — patient volume, hours, time off. Week-on/week-off, 4 day weeks, seasonal flexibility." },
@@ -301,30 +487,15 @@ function PhysiciansPage() {
   // each role to its posting; until then, funnel out.
   return <>
     <section className="sec-hero" style={{ padding: "140px 40px 80px", maxWidth: 1200, margin: "0 auto" }}>
-      <Reveal><Badge>For Physicians</Badge><h1 className="hero-title" style={{ fontFamily: F.display, fontSize: "min(48px, 7vw)", fontWeight: 500, lineHeight: 1.15, letterSpacing: -0.5, margin: "24px 0 20px", color: C.dark }}>Practice Medicine.<br/>We Handle Everything Else.</h1><p style={{ color: C.muted, fontSize: 18, fontWeight: 300, maxWidth: 640, lineHeight: 1.8, marginBottom: 32 }}>A collaborative practice environment where PM&R and Internal Medicine physicians co-manage every patient. 70% compensation, AI documentation that lets you earn more per hour, personalized schedules, a leadership ladder — and a supportive team that believes in high quality patient care.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary href={careersUrl("physicians-hero")} external>View Open Positions →</Btn><Btn onClick={() => document.getElementById("comp-calc")?.scrollIntoView({ behavior: "smooth" })}>Estimate Your Earnings</Btn></div></Reveal>
+      <Reveal><Badge>For Clinicians</Badge><h1 className="hero-title" style={{ fontFamily: F.display, fontSize: "min(48px, 7vw)", fontWeight: 500, lineHeight: 1.15, letterSpacing: -0.5, margin: "24px 0 20px", color: C.dark }}>Practice Medicine.<br/>We Handle Everything Else.</h1><p style={{ color: C.muted, fontSize: 18, fontWeight: 300, maxWidth: 640, lineHeight: 1.8, marginBottom: 32 }}>A collaborative practice environment where PM&R and Internal Medicine physicians co-manage every patient. 70% compensation, AI documentation that lets you earn more per hour, personalized schedules, a leadership ladder — and a supportive team that believes in high quality patient care.</p><div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}><Btn primary href={careersUrl("physicians-hero")} external>View Open Positions →</Btn><Btn onClick={() => document.getElementById("comp-calc")?.scrollIntoView({ behavior: "smooth" })}>Estimate Your Earnings</Btn></div></Reveal>
     </section>
     <section className="sec-bot" style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 40px 100px" }}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>{cards.map((b,i) => <Reveal key={i} delay={i*0.06}><Card {...b} /></Reveal>)}</div></section>
 
     {/* Comp Estimator */}
     <section id="comp-calc" style={{ background: C.navy, borderTop: `1px solid ${C.line}`, borderBottom: `1px solid ${C.line}` }}>
       <div className="sec-pad" style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 40px" }}>
-        <Reveal><SectionHeader badge="Compensation Estimator" title="Model Your Earnings at Gold" subtitle="See what 70% of a bigger number looks like with AI-optimized documentation." /></Reveal>
-        <Reveal delay={0.1}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(380px, 100%), 1fr))", gap: 32 }}>
-          <div style={{ background: C.slate, border: `1px solid ${C.line}`, padding: 40, boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}>
-            <h3 style={{ fontSize: 18, fontWeight: 500, marginBottom: 24, color: C.dark }}>Your Practice Profile</h3>
-            <div><label style={{ display: "block", fontSize: 13, fontWeight: 500, color: C.mutedLight, marginBottom: 6 }}>Patients Per Day: {ppd}</label><input type="range" min={10} max={40} value={ppd} onChange={e => setPpd(parseInt(e.target.value))} style={{ width: "100%", accentColor: C.gold, marginBottom: 20 }} /></div>
-            <Input label="Days Per Week" type="select" value={dpw} onChange={setDpw} options={[{value:"2",label:"2 days"},{value:"3",label:"3 days"},{value:"4",label:"4 days"},{value:"5",label:"5 days"},{value:"6",label:"6 days"},{value:"7",label:"7 days"}]} />
-            <Input label="Weeks Per Year" type="select" value={wpy} onChange={setWpy} options={[{value:"26",label:"26 weeks"},{value:"34",label:"34 weeks"},{value:"48",label:"48 weeks"},{value:"52",label:"52 weeks"}]} />
-          </div>
-          <div style={{ background: C.dark, padding: 40 }}>
-            <h3 style={{ fontFamily: F.display, fontSize: 18, fontWeight: 400, marginBottom: 24, color: C.white }}>Estimated Compensation</h3>
-            <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)", marginBottom: 4 }}>Standard (70%)</div><div style={{ fontFamily: F.display, fontSize: 32, fontWeight: 300, color: "rgba(255,255,255,0.72)" }}>${comp70.toLocaleString()}</div></div>
-            <div style={{ marginBottom: 24 }}><div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)", marginBottom: 4 }}>With Gold AI Lift (~12%)</div><div style={{ fontFamily: F.display, fontSize: 44, fontWeight: 300, color: C.gold }}>${withLift.toLocaleString()}</div></div>
-            <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", padding: 16, marginBottom: 24 }}><div style={{ fontSize: 14, color: C.white, fontWeight: 400 }}>+${(withLift - comp70).toLocaleString()}/year</div><div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)" }}>Estimated additional earnings from AI-optimized documentation</div></div>
-            <div style={{ fontSize: 12, fontWeight: 300, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 20 }}>Based on {wpy} working weeks/year. Actual comp varies by facility, payer mix, and complexity.</div>
-            <Btn primary full href={careersUrl("comp-estimator")} external>Explore Open Roles →</Btn>
-          </div>
-        </div></Reveal>
+        <Reveal><SectionHeader badge="Compensation Estimator" title="Model Your Earnings at Gold" subtitle="Published CY2026 Medicare rates for your locality, the visit mix we actually see, and every step of the math in between." /></Reveal>
+        <Reveal delay={0.1}><CompEstimator /></Reveal>
       </div>
     </section>
 
@@ -457,7 +628,7 @@ const ORIGIN = "https://www.goldpmr.com";
 const META = {
   home: { title: "Gold PM&R — Post-Acute Rehab Specialists", desc: "Gold PM&R is a physician-owned rehabilitation medicine group delivering comprehensive, high-quality PM&R across the post-acute continuum — inpatient rehab, ARU, SNF, and LTAC." },
   facilities: { title: "For Facilities — Gold PM&R", desc: "Physician partnership that raises CMI, keeps 100% CMS compliance, and delivers post-acute outcomes that become your competitive advantage." },
-  physicians: { title: "For Physicians — Gold PM&R", desc: "PM&R and Internal Medicine physicians co-managing every patient — 70% compensation, AI documentation, personalized schedules, and a paid leadership ladder." },
+  physicians: { title: "For Clinicians — Gold PM&R", desc: "PM&R and Internal Medicine physicians co-managing every patient — 70% compensation, AI documentation, personalized schedules, and a paid leadership ladder." },
   technology: { title: "GoldOS Platform — Gold PM&R", desc: "GoldOS is the intelligence layer for post-acute medical management: AI documentation, real-time compliance tracking, CMG optimization, and outcome analytics." },
   contact: { title: "Get in Touch — Gold PM&R", desc: "Facility exploring a physician partnership? Start a conversation with the Gold PM&R team." },
 };
@@ -508,7 +679,7 @@ export default function App() {
     applyMeta(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
-  const links = [{l:"About",p:"home"},{l:"Facilities",p:"facilities"},{l:"Physicians",p:"physicians"},{l:"Technology",p:"technology"}];
+  const links = [{l:"About",p:"home"},{l:"Facilities",p:"facilities"},{l:"Clinicians",p:"physicians"},{l:"Technology",p:"technology"}];
 
   return <div style={{ background: C.white, color: C.dark, fontFamily: F.body, fontWeight: 300, minHeight: "100vh", overflowX: "hidden" }}>
     <style>{`
@@ -575,7 +746,7 @@ export default function App() {
         and the two result panels this brings ink navy to roughly the kit's 22%. */}
     <footer style={{ background: C.dark }}><div className="footer-inner" style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 40px 32px" }}><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 40, marginBottom: 40 }}>
       <div><img src="/GOLD-lockup-on-dark.png" alt="Gold PM&R — Post-Acute Rehab Specialists" width={140} height={44} style={{ height: 44, width: "auto", display: "block", marginBottom: 24 }} /><p style={{ color: "rgba(255,255,255,0.72)", fontSize: 14, fontWeight: 300, lineHeight: 1.6 }}>Setting the standard in post-acute medical management.</p><p style={{ color: "rgba(255,255,255,0.72)", fontSize: 14, fontWeight: 300, marginTop: 8 }}>NV · CA · CO · AZ · OR · TX</p></div>
-      {[{t:"Company",ls:[{l:"About",p:"home"},{l:"Technology",p:"technology"},{l:"Careers",href:careersUrl("footer-careers")},{l:"Contact",p:"contact"}]},{t:"Facilities",ls:[{l:"Partnership",p:"facilities"},{l:"ROI Calculator",p:"facilities"},{l:"Compliance Quiz",p:"facilities"},{l:"Case Studies",p:"facilities"}]},{t:"Physicians",ls:[{l:"Open Positions",href:careersUrl("footer-positions")},{l:"Compensation",p:"physicians"},{l:"Gold Bar",p:"physicians"},{l:"Culture",p:"physicians"}]}].map((col,i) => { const fstyle = { color: "rgba(255,255,255,0.72)", background: "none", border: "none", fontFamily: F.body, fontSize: 14, fontWeight: 300, cursor: "pointer", transition: "color 0.3s", textAlign: "left", padding: "6px 0", minHeight: 32, textDecoration: "none", display: "inline-block" }; const enter = e => e.currentTarget.style.color = C.goldLight; const leave = e => e.currentTarget.style.color = "rgba(255,255,255,0.72)"; return <div key={i}><div style={{ fontWeight: 300, fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.goldLight, marginBottom: 14 }}>{col.t}</div>{col.ls.map(link => <div key={link.l}>{link.href ? <a href={link.href} target="_blank" rel="noopener noreferrer" style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</a> : <button onClick={() => nav(link.p)} style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</button>}</div>)}</div>; })}
+      {[{t:"Company",ls:[{l:"About",p:"home"},{l:"Technology",p:"technology"},{l:"Careers",href:careersUrl("footer-careers")},{l:"Contact",p:"contact"}]},{t:"Facilities",ls:[{l:"Partnership",p:"facilities"},{l:"ROI Calculator",p:"facilities"},{l:"Compliance Quiz",p:"facilities"},{l:"Case Studies",p:"facilities"}]},{t:"Clinicians",ls:[{l:"Open Positions",href:careersUrl("footer-positions")},{l:"Compensation",p:"physicians"},{l:"Gold Bar",p:"physicians"},{l:"Culture",p:"physicians"}]}].map((col,i) => { const fstyle = { color: "rgba(255,255,255,0.72)", background: "none", border: "none", fontFamily: F.body, fontSize: 14, fontWeight: 300, cursor: "pointer", transition: "color 0.3s", textAlign: "left", padding: "6px 0", minHeight: 32, textDecoration: "none", display: "inline-block" }; const enter = e => e.currentTarget.style.color = C.goldLight; const leave = e => e.currentTarget.style.color = "rgba(255,255,255,0.72)"; return <div key={i}><div style={{ fontWeight: 300, fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.goldLight, marginBottom: 14 }}>{col.t}</div>{col.ls.map(link => <div key={link.l}>{link.href ? <a href={link.href} target="_blank" rel="noopener noreferrer" style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</a> : <button onClick={() => nav(link.p)} style={fstyle} onMouseEnter={enter} onMouseLeave={leave}>{link.l}</button>}</div>)}</div>; })}
     </div><div style={{ borderTop: "1px solid rgba(255,255,255,0.14)", paddingTop: 20, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}><span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 300 }}>© 2026 Gold Physical Medicine and Rehabilitation, PC & Gold Management Services, LLC</span><span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 300 }}>Physician-Led · Technology-Forward · Outcome-Driven</span></div></div></footer>
   </div>;
 }

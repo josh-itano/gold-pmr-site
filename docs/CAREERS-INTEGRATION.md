@@ -14,13 +14,17 @@ are constant — analytics groups on them; vary only content):
 
 | utm_content | Where |
 |---|---|
-| `physicians-hero` | Physicians hero — "View Open Positions →" |
-| `positions` | Physicians "Open Positions" section — "View Open Roles →" |
+| `physicians-hero` | Clinicians page hero — "View Open Positions →" |
+| `positions` | Clinicians "Open Positions" section — "View Open Roles →" |
 | `comp-estimator` | Comp estimator payoff panel — "Explore Open Roles →" |
-| `new-markets` | Physicians — "tell us where you are" |
+| `new-markets` | Clinicians page — "tell us where you are" |
 | `footer-careers` | Footer · Company · Careers |
-| `footer-positions` | Footer · Physicians · Open Positions |
+| `footer-positions` | Footer · Clinicians · Open Positions |
 | `contact-redirect` | Contact form — physician redirect banner |
+
+The page was relabeled **Clinicians** (Aug 2026) when the comp estimator gained
+an NP/PA path. Deliberately unchanged: the `/physicians` URL, internal route
+keys, and every `utm_content` value — analytics and indexed links keep working.
 
 All are real `<a>` tags (crawlable, middle-clickable), `target=_blank`,
 `rel=noopener noreferrer`. Built by `careersUrl(content)` in `src/App.jsx`.

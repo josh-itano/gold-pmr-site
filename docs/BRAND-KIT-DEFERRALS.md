@@ -127,7 +127,7 @@ Established in `8ef19da`; re-verify if surfaces or type change:
 - 2px Deep Gold focus ring on every control. Never re-add `outline: none` inline —
   inline styles beat the `:focus-visible` stylesheet rule.
 - `prefers-reduced-motion` honored in CSS **and** in the JS counters (`AnimNum`,
-  `Reveal`).
+  `Reveal`, and the comp estimator's `useCountUp`).
 - `#C9A227` is decorative only: 2.42:1 on white, so it fails even the 3:1
   large-text bar. It appears as text nowhere. The 5 remaining `color: C.gold` uses
   all sit on Ink Navy grounds (7.38:1).

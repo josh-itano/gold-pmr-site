@@ -1,16 +1,51 @@
-# React + Vite
+# goldpmr.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing site for Gold PM&R — a physician-owned post-acute rehabilitation
+medicine group. Two audiences: **facilities** (partnership, ROI calculator,
+compliance assessment) and **clinicians** (recruiting, compensation estimator).
 
-Currently, two official plugins are available:
+Live at **https://www.goldpmr.com**. Pushes to `main` deploy straight to
+production via Vercel — there is no staging branch.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19 + Vite, single-file app (`src/App.jsx`) with hand-rolled routing
+  (`PATHS` / `nav()` / `applyMeta()`), inline styles from two token objects
+  (`C` colors, `F` type). No CSS framework, no router library, no state manager.
+- `src/data/compRates.js` — CY2026 Medicare rate data behind the comp estimator
+  (see `docs/COMP-ESTIMATOR.md` before touching any number in it).
+- `api/contact.js` — Vercel function for the facility contact form
+  (Supabase insert + Resend notification from `mail.goldpmr.com`).
+- Careers/recruiting flows live on **careers.goldpmr.com**; this site only
+  funnels out with UTM attribution (`docs/CAREERS-INTEGRATION.md`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Commands
 
-## Expanding the ESLint configuration
+```sh
+npm run dev       # Vite dev server (localhost:5173)
+npm run lint      # eslint — must be clean
+npm run build     # production build — must be clean
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Before you change things
+
+- **Brand rules are enforced in code comments** — start at the `C` and `F`
+  token definitions at the top of `src/App.jsx`. Headlines: `#C9A227` gold is
+  decorative-only (it fails contrast as text; interactive gold is `C.deepGold`),
+  there is no bold in the identity (weights 300/400/500), tap targets are 44px,
+  and never set `outline: none` inline. Open brand questions live in
+  `docs/BRAND-KIT-DEFERRALS.md`.
+- **Calculator constants are decisions, not defaults.** The ROI calculator and
+  comp estimator numbers were each deliberately chosen or measured;
+  `docs/COMP-ESTIMATOR.md` records which is which and what must not ship
+  without its disclaimers.
+- **UTM values are load-bearing** — analytics groups on them. Vary
+  `utm_content` per touchpoint; never change source/medium/campaign.
+
+## Docs
+
+| File | What it covers |
+|---|---|
+| `docs/COMP-ESTIMATOR.md` | Comp estimator data provenance, measured-vs-target constants, invariants, open items |
+| `docs/CAREERS-INTEGRATION.md` | Careers funnel, UTM map, future live-jobs feed spec |
+| `docs/BRAND-KIT-DEFERRALS.md` | Brand kit deviations awaiting human decisions; accessibility invariants |

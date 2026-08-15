@@ -334,6 +334,7 @@ function CompEstimator() {
   const [perDay, setPerDay] = useState(RATE_CONFIG.DEFAULT_PER_DAY);
   const [daysWeek, setDaysWeek] = useState(RATE_CONFIG.DEFAULT_DAYS_WEEK);
   const [weeksYear, setWeeksYear] = useState(RATE_CONFIG.DEFAULT_WEEKS_YEAR);
+  const [mixOpen, setMixOpen] = useState(false);
 
   const locality = LOCALITIES.find((l) => l.id === localityId);
   const setting = SETTINGS.find((s) => s.id === settingId);
@@ -418,11 +419,19 @@ function CompEstimator() {
 
     {/* Visit mix */}
     <div style={{ marginTop: 32, background: C.slate, border: `1px solid ${C.line}`, padding: "36px", boxShadow: "0 1px 4px rgba(15,23,42,0.04)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 8 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 500, color: C.dark }}>Your Visit Mix</h3>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 320px" }}>
+          <h3 style={{ fontSize: 18, fontWeight: 500, color: C.dark, marginBottom: 6 }}>Your Visit Mix</h3>
+          <p style={{ fontSize: 14, fontWeight: 300, color: C.muted, lineHeight: 1.7, maxWidth: 720 }}>A {setting.alos}-day stay produces one admission, {setting.alos - 2} progress notes and one discharge — so the split follows length of stay. Expand to see the per-code rates behind your estimate.</p>
+        </div>
+        <button onClick={() => setMixOpen((o) => !o)} aria-expanded={mixOpen} aria-controls="visit-mix-detail" style={{ minHeight: 44, padding: "8px 20px", background: "transparent", border: `1px solid ${C.line}`, color: C.dark, fontFamily: F.body, fontSize: 14, fontWeight: 400, cursor: "pointer", transition: "all 0.3s", display: "inline-flex", alignItems: "center", gap: 8 }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; }}>{mixOpen ? "Hide details" : "Show details"}<span aria-hidden="true" style={{ display: "inline-block", fontSize: 12, transition: "transform 0.3s", transform: mixOpen ? "rotate(180deg)" : "none" }}>▾</span></button>
+      </div>
+
+      {mixOpen && <div id="visit-mix-detail" style={{ marginTop: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
+        <span style={{ fontSize: 13, fontWeight: 300, color: C.mutedLight }}>The level percentages within each visit type are yours to adjust.</span>
         <button onClick={() => setLevels(copyLevels(setting.levels))} style={{ minHeight: 44, padding: "8px 20px", background: "transparent", border: `1px solid ${C.line}`, color: C.dark, fontFamily: F.body, fontSize: 14, fontWeight: 400, cursor: "pointer", transition: "all 0.3s" }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; }}>Reset to typical</button>
       </div>
-      <p style={{ fontSize: 14, fontWeight: 300, color: C.muted, lineHeight: 1.7, maxWidth: 720, marginBottom: 20 }}>A {setting.alos}-day stay produces one admission, {setting.alos - 2} progress notes and one discharge — so the split follows length of stay. The level percentages within each visit type are yours to adjust.</p>
 
       <div aria-hidden="true" style={{ display: "flex", height: 12, marginBottom: 10, background: C.navy }}>
         <div style={{ width: `${shares.initial * 100}%`, background: C.dark, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
@@ -464,10 +473,10 @@ function CompEstimator() {
           );
         })}
       </div>
-      <div style={{ fontSize: 12, fontWeight: 300, color: C.muted, marginTop: 20 }}>Rates are calculated from published CY2026 relative value units and the geographic practice cost indices for your Medicare locality.</div>
+      <p style={{ fontSize: 14, fontWeight: 300, color: C.mutedLight, lineHeight: 1.7, maxWidth: 820, margin: "20px 0 0" }}>The level mix describes a patient population over time. Coding level for any single encounter is determined by medical decision-making, or by documented time where the code allows it — never by a target or an average.</p>
+      <div style={{ fontSize: 12, fontWeight: 300, color: C.muted, marginTop: 12 }}>Rates are calculated from published CY2026 relative value units and the geographic practice cost indices for your Medicare locality.</div>
+      </div>}
     </div>
-
-    <p style={{ fontSize: 14, fontWeight: 300, color: C.mutedLight, lineHeight: 1.7, maxWidth: 820, margin: "24px auto 0", textAlign: "center" }}>The level mix describes a patient population over time. Coding level for any single encounter is determined by medical decision-making, or by documented time where the code allows it — never by a target or an average.</p>
   </>;
 }
 

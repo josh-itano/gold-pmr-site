@@ -399,7 +399,7 @@ function CompEstimator() {
           ["Average Medicare allowed per visit", fmtCents(est.weightedAllowed)],
           ["Adjusted for payer mix", fmtCents(est.afterPayer)],
           ["Net of denials and uncollected balances", fmtCents(est.perEncounter)],
-          ["Your share", `${Math.round(est.compRate * 100)}%`],
+          ["Compensation rate", `${Math.round(est.compRate * 100)}%`],
         ].map(([l, v]) => (
           <div key={l} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.14)" }}>
             <span style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.72)" }}>{l}</span>

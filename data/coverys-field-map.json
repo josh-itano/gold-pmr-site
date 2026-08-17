@@ -1,0 +1,1306 @@
+{
+  "form": "Coverys Healthcare Provider Professional Liability Application",
+  "revision": "APP MPL 001 07/25",
+  "sourceFile": "Coverys_Physician_application_-_All_states_2025.docx",
+  "mapVersion": "1.0.0",
+  "counts": {
+    "textFields": 212,
+    "checkboxes": 146
+  },
+  "addressing": "Positional. Text fields are the Nth legacy FORMTEXT field in document order (0-based); checkboxes are the Nth w14:checkbox content control in document order (0-based). Field names in the DOCX are all 'Text1' and are NOT usable as identifiers.",
+  "warning": "This map is valid ONLY for revision APP MPL 001 07/25. Any new form revision reshuffles every index. Verify with the checksum script before trusting it.",
+  "literalCheckboxes": [
+    "Telemedicine Q5 (patients without prior relationship) Yes/No",
+    "Telemedicine Q6 (encrypted communication) Yes/No",
+    "Telemedicine Q7 (APPs utilized) Yes/No",
+    "Telemedicine Q8 (APPs employed and covered) Yes/No",
+    "Telemedicine media row: Audio / Video / Virtual Network / Other"
+  ],
+  "literalCheckboxNote": "These are plain \u2610 glyphs in body text, not content controls. They cannot be checked programmatically. Route the answer into the adjacent text field instead \u2014 see the notes on the telemedicine.* keys.",
+  "fields": {
+    "carrier.proselect": {
+      "type": "checkbox",
+      "index": 0
+    },
+    "carrier.medicalProfessionalMutual": {
+      "type": "checkbox",
+      "index": 1
+    },
+    "producer.agency": {
+      "type": "text",
+      "index": 0,
+      "note": "Broker agency name + location. Constant from config, not user input."
+    },
+    "applicant.lastName": {
+      "type": "text",
+      "index": 1
+    },
+    "applicant.firstName": {
+      "type": "text",
+      "index": 2
+    },
+    "applicant.middleInitial": {
+      "type": "text",
+      "index": 3
+    },
+    "applicant.gender": {
+      "type": "text",
+      "index": 4
+    },
+    "applicant.dateOfBirth": {
+      "type": "text",
+      "index": 5
+    },
+    "applicant.npi": {
+      "type": "text",
+      "index": 6
+    },
+    "applicant.email": {
+      "type": "text",
+      "index": 7
+    },
+    "applicant.phone": {
+      "type": "text",
+      "index": 8
+    },
+    "_reserved.phoneOverflow": {
+      "type": "text",
+      "index": 9,
+      "note": "Second field in the phone cell; leave empty."
+    },
+    "applicant.practiceName": {
+      "type": "text",
+      "index": 10
+    },
+    "applicant.practiceWebsite": {
+      "type": "text",
+      "index": 11
+    },
+    "_reserved.websiteOverflow": {
+      "type": "text",
+      "index": 12,
+      "note": "Second field in the website cell; leave empty."
+    },
+    "applicant.practiceAddressIsMailing": {
+      "type": "checkbox",
+      "index": 2
+    },
+    "applicant.practiceAddressIsBilling": {
+      "type": "checkbox",
+      "index": 3
+    },
+    "applicant.practiceAddress": {
+      "type": "text",
+      "index": 13
+    },
+    "_reserved.practiceAddressOverflow": {
+      "type": "text",
+      "index": 14,
+      "note": "Second field in the practice address cell; leave empty."
+    },
+    "applicant.residenceAddressIsMailing": {
+      "type": "checkbox",
+      "index": 4
+    },
+    "applicant.residenceAddressIsBilling": {
+      "type": "checkbox",
+      "index": 5
+    },
+    "applicant.residenceAddress": {
+      "type": "text",
+      "index": 15
+    },
+    "coverage.typeOccurrence": {
+      "type": "checkbox",
+      "index": 6
+    },
+    "coverage.typeClaimsMade": {
+      "type": "checkbox",
+      "index": 7
+    },
+    "coverage.typeModifiedClaimsMade": {
+      "type": "checkbox",
+      "index": 8
+    },
+    "coverage.effectiveFrom": {
+      "type": "text",
+      "index": 16
+    },
+    "coverage.effectiveTo": {
+      "type": "text",
+      "index": 17
+    },
+    "coverage.retroactiveDate": {
+      "type": "text",
+      "index": 18
+    },
+    "coverage.limitPerClaim": {
+      "type": "text",
+      "index": 19
+    },
+    "coverage.limitAggregate": {
+      "type": "text",
+      "index": 20
+    },
+    "coverage.scopeFullTime": {
+      "type": "checkbox",
+      "index": 9
+    },
+    "coverage.scopePartTime": {
+      "type": "checkbox",
+      "index": 10
+    },
+    "coverage.scopeMoonlighting": {
+      "type": "checkbox",
+      "index": 11
+    },
+    "coverage.scopeFtcaGap": {
+      "type": "checkbox",
+      "index": 12
+    },
+    "coverage.scopeLocumTenens": {
+      "type": "checkbox",
+      "index": 13
+    },
+    "coverage.scopeResident": {
+      "type": "checkbox",
+      "index": 14
+    },
+    "coverage.scopeFellow": {
+      "type": "checkbox",
+      "index": 15
+    },
+    "coverage.scopeIntern": {
+      "type": "checkbox",
+      "index": 16
+    },
+    "coverage.hoursPerWeek": {
+      "type": "text",
+      "index": 21
+    },
+    "coverage.hoursPerMonth": {
+      "type": "text",
+      "index": 22
+    },
+    "coverage.partTimeSince": {
+      "type": "text",
+      "index": 23
+    },
+    "practiceType.individualOrIC": {
+      "type": "checkbox",
+      "index": 17
+    },
+    "practiceType.soloCorporation": {
+      "type": "checkbox",
+      "index": 18
+    },
+    "practiceType.soloCorporationName": {
+      "type": "text",
+      "index": 24
+    },
+    "practiceType.groupPractice": {
+      "type": "checkbox",
+      "index": 19
+    },
+    "practiceType.groupPracticeName": {
+      "type": "text",
+      "index": 25
+    },
+    "practiceType.healthcareFacility": {
+      "type": "checkbox",
+      "index": 20
+    },
+    "practiceType.healthcareFacilityName": {
+      "type": "text",
+      "index": 26
+    },
+    "serviceLocations.1.location": {
+      "type": "text",
+      "index": 27
+    },
+    "serviceLocations.1.specialty": {
+      "type": "text",
+      "index": 28
+    },
+    "serviceLocations.1.hoursPerWeek": {
+      "type": "text",
+      "index": 29
+    },
+    "serviceLocations.1.currentCarrier": {
+      "type": "text",
+      "index": 30
+    },
+    "serviceLocations.1.hasCurrentCoverage": {
+      "type": "yesno",
+      "yes": 21,
+      "no": 23
+    },
+    "serviceLocations.1.seekingCoverage": {
+      "type": "yesno",
+      "yes": 22,
+      "no": 24
+    },
+    "serviceLocations.2.location": {
+      "type": "text",
+      "index": 31
+    },
+    "serviceLocations.2.specialty": {
+      "type": "text",
+      "index": 32
+    },
+    "serviceLocations.2.hoursPerWeek": {
+      "type": "text",
+      "index": 33
+    },
+    "serviceLocations.2.currentCarrier": {
+      "type": "text",
+      "index": 34
+    },
+    "serviceLocations.2.hasCurrentCoverage": {
+      "type": "yesno",
+      "yes": 25,
+      "no": 27
+    },
+    "serviceLocations.2.seekingCoverage": {
+      "type": "yesno",
+      "yes": 26,
+      "no": 28
+    },
+    "serviceLocations.3.location": {
+      "type": "text",
+      "index": 35
+    },
+    "serviceLocations.3.specialty": {
+      "type": "text",
+      "index": 36
+    },
+    "serviceLocations.3.hoursPerWeek": {
+      "type": "text",
+      "index": 37
+    },
+    "serviceLocations.3.currentCarrier": {
+      "type": "text",
+      "index": 38
+    },
+    "serviceLocations.3.hasCurrentCoverage": {
+      "type": "yesno",
+      "yes": 29,
+      "no": 31
+    },
+    "serviceLocations.3.seekingCoverage": {
+      "type": "yesno",
+      "yes": 30,
+      "no": 32
+    },
+    "serviceLocations.4.location": {
+      "type": "text",
+      "index": 39
+    },
+    "serviceLocations.4.specialty": {
+      "type": "text",
+      "index": 40
+    },
+    "serviceLocations.4.hoursPerWeek": {
+      "type": "text",
+      "index": 41
+    },
+    "serviceLocations.4.currentCarrier": {
+      "type": "text",
+      "index": 42
+    },
+    "serviceLocations.4.hasCurrentCoverage": {
+      "type": "yesno",
+      "yes": 33,
+      "no": 35
+    },
+    "serviceLocations.4.seekingCoverage": {
+      "type": "yesno",
+      "yes": 34,
+      "no": 36
+    },
+    "licenses.1.state": {
+      "type": "text",
+      "index": 43
+    },
+    "licenses.1.number": {
+      "type": "text",
+      "index": 44
+    },
+    "licenses.1.percentOfPractice": {
+      "type": "text",
+      "index": 45
+    },
+    "licenses.1.servicesProvided": {
+      "type": "text",
+      "index": 46
+    },
+    "licenses.2.state": {
+      "type": "text",
+      "index": 47
+    },
+    "licenses.2.number": {
+      "type": "text",
+      "index": 48
+    },
+    "licenses.2.percentOfPractice": {
+      "type": "text",
+      "index": 49
+    },
+    "licenses.2.servicesProvided": {
+      "type": "text",
+      "index": 50
+    },
+    "licenses.3.state": {
+      "type": "text",
+      "index": 51
+    },
+    "licenses.3.number": {
+      "type": "text",
+      "index": 52
+    },
+    "licenses.3.percentOfPractice": {
+      "type": "text",
+      "index": 53
+    },
+    "licenses.3.servicesProvided": {
+      "type": "text",
+      "index": 54
+    },
+    "education.medicalSchool.institution": {
+      "type": "text",
+      "index": 55
+    },
+    "education.medicalSchool.degree": {
+      "type": "text",
+      "index": 56
+    },
+    "education.medicalSchool.completed": {
+      "type": "text",
+      "index": 57
+    },
+    "education.internship.institution": {
+      "type": "text",
+      "index": 58
+    },
+    "education.internship.specialty": {
+      "type": "text",
+      "index": 59
+    },
+    "education.internship.completed": {
+      "type": "text",
+      "index": 60
+    },
+    "education.residency.institution": {
+      "type": "text",
+      "index": 61
+    },
+    "education.residency.specialty": {
+      "type": "text",
+      "index": 62
+    },
+    "education.residency.completed": {
+      "type": "text",
+      "index": 63
+    },
+    "education.fellowship.institution": {
+      "type": "text",
+      "index": 64
+    },
+    "education.fellowship.specialty": {
+      "type": "text",
+      "index": 65
+    },
+    "education.fellowship.completed": {
+      "type": "text",
+      "index": 66
+    },
+    "education.ecfmgCertified": {
+      "type": "yesno",
+      "yes": 37,
+      "no": 38
+    },
+    "education.boardCertified": {
+      "type": "yesno",
+      "yes": 39,
+      "no": 40
+    },
+    "education.boardABMS": {
+      "type": "checkbox",
+      "index": 41
+    },
+    "education.boardABPS": {
+      "type": "checkbox",
+      "index": 42
+    },
+    "education.boardAOA": {
+      "type": "checkbox",
+      "index": 43
+    },
+    "education.boardASMBS": {
+      "type": "checkbox",
+      "index": 44
+    },
+    "education.boardSpecialties": {
+      "type": "text",
+      "index": 67
+    },
+    "practice.specialty": {
+      "type": "text",
+      "index": 68
+    },
+    "practice.changedInPastFiveYears": {
+      "type": "yesno",
+      "yes": 45,
+      "no": 46
+    },
+    "practice.changedExplanation": {
+      "type": "text",
+      "index": 69
+    },
+    "surgery.none": {
+      "type": "checkbox",
+      "index": 47
+    },
+    "surgery.minor": {
+      "type": "checkbox",
+      "index": 48
+    },
+    "surgery.major": {
+      "type": "checkbox",
+      "index": 49
+    },
+    "surgery.assistingMajor": {
+      "type": "checkbox",
+      "index": 50
+    },
+    "surgery.majorProceduresPerformed": {
+      "type": "text",
+      "index": 70
+    },
+    "_reserved.surgicalGridLeadCell": {
+      "type": "text",
+      "index": 71,
+      "note": "Unlabeled leading cell of the surgical activity grid; leave empty."
+    },
+    "surgery.activityPercent.abdominal": {
+      "type": "text",
+      "index": 72
+    },
+    "surgery.activityPercent.laparoscopic": {
+      "type": "text",
+      "index": 73
+    },
+    "surgery.activityPercent.plasticOtorhinolaryngology": {
+      "type": "text",
+      "index": 74
+    },
+    "surgery.activityPercent.bariatric": {
+      "type": "text",
+      "index": 75
+    },
+    "surgery.activityPercent.neurosurgery": {
+      "type": "text",
+      "index": 76
+    },
+    "surgery.activityPercent.podiatric": {
+      "type": "text",
+      "index": 77
+    },
+    "surgery.activityPercent.cardiac": {
+      "type": "text",
+      "index": 78
+    },
+    "surgery.activityPercent.obgyn": {
+      "type": "text",
+      "index": 79
+    },
+    "surgery.activityPercent.thoracic": {
+      "type": "text",
+      "index": 80
+    },
+    "surgery.activityPercent.colonRectal": {
+      "type": "text",
+      "index": 81
+    },
+    "surgery.activityPercent.ophthalmology": {
+      "type": "text",
+      "index": 82
+    },
+    "surgery.activityPercent.traumatic": {
+      "type": "text",
+      "index": 83
+    },
+    "surgery.activityPercent.general": {
+      "type": "text",
+      "index": 84
+    },
+    "surgery.activityPercent.orthopedicWithSpinal": {
+      "type": "text",
+      "index": 85
+    },
+    "surgery.activityPercent.urological": {
+      "type": "text",
+      "index": 86
+    },
+    "surgery.activityPercent.gynecology": {
+      "type": "text",
+      "index": 87
+    },
+    "surgery.activityPercent.orthopedicNoSpinal": {
+      "type": "text",
+      "index": 88
+    },
+    "surgery.activityPercent.vascular": {
+      "type": "text",
+      "index": 89
+    },
+    "surgery.activityPercent.hand": {
+      "type": "text",
+      "index": 90
+    },
+    "surgery.activityPercent.otorhinolaryngology": {
+      "type": "text",
+      "index": 91
+    },
+    "surgery.activityPercent.headNeck": {
+      "type": "text",
+      "index": 92
+    },
+    "surgery.locationOffice": {
+      "type": "checkbox",
+      "index": 51
+    },
+    "surgery.locationSurgiCenter": {
+      "type": "checkbox",
+      "index": 52
+    },
+    "surgery.locationHospital": {
+      "type": "checkbox",
+      "index": 53
+    },
+    "surgery.locations": {
+      "type": "text",
+      "index": 93
+    },
+    "bariatric.yearsPerforming": {
+      "type": "text",
+      "index": 94
+    },
+    "bariatric.procedures.1.type": {
+      "type": "text",
+      "index": 95
+    },
+    "bariatric.procedures.1.technique": {
+      "type": "text",
+      "index": 96
+    },
+    "bariatric.procedures.1.totalWithProctor": {
+      "type": "text",
+      "index": 97
+    },
+    "bariatric.procedures.1.totalAnnually": {
+      "type": "text",
+      "index": 98
+    },
+    "bariatric.procedures.2.type": {
+      "type": "text",
+      "index": 99
+    },
+    "bariatric.procedures.2.technique": {
+      "type": "text",
+      "index": 100
+    },
+    "bariatric.procedures.2.totalWithProctor": {
+      "type": "text",
+      "index": 101
+    },
+    "bariatric.procedures.2.totalAnnually": {
+      "type": "text",
+      "index": 102
+    },
+    "bariatric.procedures.3.type": {
+      "type": "text",
+      "index": 103
+    },
+    "bariatric.procedures.3.technique": {
+      "type": "text",
+      "index": 104
+    },
+    "bariatric.procedures.3.totalWithProctor": {
+      "type": "text",
+      "index": 105
+    },
+    "bariatric.procedures.3.totalAnnually": {
+      "type": "text",
+      "index": 106
+    },
+    "bariatric.procedures.4.type": {
+      "type": "text",
+      "index": 107
+    },
+    "bariatric.procedures.4.technique": {
+      "type": "text",
+      "index": 108
+    },
+    "bariatric.procedures.4.totalWithProctor": {
+      "type": "text",
+      "index": 109
+    },
+    "bariatric.procedures.4.totalAnnually": {
+      "type": "text",
+      "index": 110
+    },
+    "bariatric.pediatricPatients": {
+      "type": "yesno",
+      "yes": 54,
+      "no": 55
+    },
+    "bariatric.writtenSelectionProtocols": {
+      "type": "yesno",
+      "yes": 56,
+      "no": 57
+    },
+    "bariatric.multidisciplinaryTeam": {
+      "type": "yesno",
+      "yes": 58,
+      "no": 59
+    },
+    "bariatric.followUpPeriod": {
+      "type": "text",
+      "index": 111
+    },
+    "bariatric.writtenPreOpReviewProcess": {
+      "type": "yesno",
+      "yes": 60,
+      "no": 61
+    },
+    "obstetrics.performsDeliveries": {
+      "type": "yesno",
+      "yes": 62,
+      "no": 63
+    },
+    "obstetrics.babiesAnnually": {
+      "type": "text",
+      "index": 112
+    },
+    "obstetrics.performsCSectionOrVbac": {
+      "type": "yesno",
+      "yes": 64,
+      "no": 65
+    },
+    "obstetrics.assistsCSection": {
+      "type": "yesno",
+      "yes": 66,
+      "no": 67
+    },
+    "obstetrics.assistOwnPatients": {
+      "type": "checkbox",
+      "index": 68
+    },
+    "obstetrics.assistOtherThanOwnPatients": {
+      "type": "checkbox",
+      "index": 69
+    },
+    "orthopedics.spinalSurgery": {
+      "type": "yesno",
+      "yes": 70,
+      "no": 71
+    },
+    "ent.plasticSurgery": {
+      "type": "yesno",
+      "yes": 72,
+      "no": 73
+    },
+    "ent.plasticSurgeryOtherAnatomy": {
+      "type": "yesno",
+      "yes": 74,
+      "no": 75
+    },
+    "ent.plasticSurgeryExplanation": {
+      "type": "text",
+      "index": 113
+    },
+    "correctional.providesServices": {
+      "type": "yesno",
+      "yes": 76,
+      "no": 77
+    },
+    "correctional.percentOfPractice": {
+      "type": "text",
+      "index": 114
+    },
+    "correctional.locations": {
+      "type": "text",
+      "index": 115
+    },
+    "emergencyRoom.staffs": {
+      "type": "yesno",
+      "yes": 78,
+      "no": 79
+    },
+    "emergencyRoom.hoursPerMonth": {
+      "type": "text",
+      "index": 116
+    },
+    "homeHealth.practices": {
+      "type": "yesno",
+      "yes": 80,
+      "no": 81
+    },
+    "homeHealth.percentOfPractice": {
+      "type": "text",
+      "index": 117
+    },
+    "homeHealth.chaperonePolicy": {
+      "type": "yesno",
+      "yes": 82,
+      "no": 83
+    },
+    "homeHealth.scopeOfTreatment": {
+      "type": "text",
+      "index": 118
+    },
+    "longTermCare.practices": {
+      "type": "yesno",
+      "yes": 84,
+      "no": 85
+    },
+    "longTermCare.seekingCoverage": {
+      "type": "yesno",
+      "yes": 86,
+      "no": 87
+    },
+    "longTermCare.patientsWithoutPriorRelationship": {
+      "type": "yesno",
+      "yes": 88,
+      "no": 89
+    },
+    "longTermCare.percentOfPractice": {
+      "type": "text",
+      "index": 119
+    },
+    "medicalDirector.serves": {
+      "type": "yesno",
+      "yes": 90,
+      "no": 91
+    },
+    "medicalDirector.seekingCoverage": {
+      "type": "yesno",
+      "yes": 92,
+      "no": 93
+    },
+    "medicalDirector.percentOfPractice": {
+      "type": "text",
+      "index": 120
+    },
+    "medicalDirector.locations": {
+      "type": "text",
+      "index": 121
+    },
+    "research.participates": {
+      "type": "yesno",
+      "yes": 94,
+      "no": 95
+    },
+    "research.seekingCoverage": {
+      "type": "yesno",
+      "yes": 96,
+      "no": 97
+    },
+    "painManagement.provides": {
+      "type": "yesno",
+      "yes": 98,
+      "no": 99
+    },
+    "painManagement.modalities": {
+      "type": "text",
+      "index": 122
+    },
+    "surgiCenter.ownsOperatesOrUses": {
+      "type": "yesno",
+      "yes": 100,
+      "no": 101
+    },
+    "telemedicine.hoursPerWeek": {
+      "type": "text",
+      "index": 123
+    },
+    "telemedicine.otherHoursPerWeek": {
+      "type": "text",
+      "index": 124
+    },
+    "telemedicine.scopeAndVendors": {
+      "type": "text",
+      "index": 125
+    },
+    "telemedicine.mediaConfirmation": {
+      "type": "text",
+      "index": 126,
+      "note": "Free-text. The Audio/Video/Virtual Network boxes beside it are literal glyphs, NOT form fields \u2014 write the answer here."
+    },
+    "telemedicine.mediaOther": {
+      "type": "text",
+      "index": 127
+    },
+    "telemedicine.byState.1.state": {
+      "type": "text",
+      "index": 128
+    },
+    "telemedicine.byState.1.hoursPerWeek": {
+      "type": "text",
+      "index": 129
+    },
+    "telemedicine.byState.1.percentOfPractice": {
+      "type": "text",
+      "index": 130
+    },
+    "telemedicine.byState.2.state": {
+      "type": "text",
+      "index": 131
+    },
+    "telemedicine.byState.2.hoursPerWeek": {
+      "type": "text",
+      "index": 132
+    },
+    "telemedicine.byState.2.percentOfPractice": {
+      "type": "text",
+      "index": 133
+    },
+    "telemedicine.byState.3.state": {
+      "type": "text",
+      "index": 134
+    },
+    "telemedicine.byState.3.hoursPerWeek": {
+      "type": "text",
+      "index": 135
+    },
+    "telemedicine.byState.3.percentOfPractice": {
+      "type": "text",
+      "index": 136
+    },
+    "telemedicine.byState.4.state": {
+      "type": "text",
+      "index": 137
+    },
+    "telemedicine.byState.4.hoursPerWeek": {
+      "type": "text",
+      "index": 138
+    },
+    "telemedicine.byState.4.percentOfPractice": {
+      "type": "text",
+      "index": 139
+    },
+    "telemedicine.patientsWithoutPriorRelationshipExplanation": {
+      "type": "text",
+      "index": 140,
+      "note": "Yes/No boxes for this question are literal glyphs. Lead the text with 'Yes \u2014' or 'No \u2014'."
+    },
+    "telemedicine.encryptionExplanation": {
+      "type": "text",
+      "index": 141,
+      "note": "Yes/No boxes are literal glyphs. Lead with 'Yes \u2014' or 'No \u2014'."
+    },
+    "telemedicine.appRelationshipExplanation": {
+      "type": "text",
+      "index": 142,
+      "note": "Yes/No boxes are literal glyphs. Lead with 'Yes \u2014' or 'No \u2014'."
+    },
+    "staff.physicians.employed": {
+      "type": "text",
+      "index": 143
+    },
+    "staff.physicians.supervised": {
+      "type": "text",
+      "index": 144
+    },
+    "staff.physicians.independentContractor": {
+      "type": "text",
+      "index": 145
+    },
+    "staff.surgeons.employed": {
+      "type": "text",
+      "index": 146
+    },
+    "staff.surgeons.supervised": {
+      "type": "text",
+      "index": 147
+    },
+    "staff.surgeons.independentContractor": {
+      "type": "text",
+      "index": 148
+    },
+    "staff.certifiedNurseMidwives.employed": {
+      "type": "text",
+      "index": 149
+    },
+    "staff.certifiedNurseMidwives.supervised": {
+      "type": "text",
+      "index": 150
+    },
+    "staff.certifiedNurseMidwives.independentContractor": {
+      "type": "text",
+      "index": 151
+    },
+    "staff.crnas.employed": {
+      "type": "text",
+      "index": 152
+    },
+    "staff.crnas.supervised": {
+      "type": "text",
+      "index": 153
+    },
+    "staff.crnas.independentContractor": {
+      "type": "text",
+      "index": 154
+    },
+    "staff.alliedHealthProviders.employed": {
+      "type": "text",
+      "index": 155
+    },
+    "staff.alliedHealthProviders.supervised": {
+      "type": "text",
+      "index": 156
+    },
+    "staff.alliedHealthProviders.independentContractor": {
+      "type": "text",
+      "index": 157
+    },
+    "staff.miscMedicalEmployees.employed": {
+      "type": "text",
+      "index": 158
+    },
+    "staff.miscMedicalEmployees.supervised": {
+      "type": "text",
+      "index": 159
+    },
+    "staff.miscMedicalEmployees.independentContractor": {
+      "type": "text",
+      "index": 160
+    },
+    "priorCarriers.1.insurer": {
+      "type": "text",
+      "index": 161
+    },
+    "priorCarriers.1.coverageFrom": {
+      "type": "text",
+      "index": 165
+    },
+    "priorCarriers.1.coverageTo": {
+      "type": "text",
+      "index": 166
+    },
+    "priorCarriers.1.policyNumber": {
+      "type": "text",
+      "index": 173
+    },
+    "priorCarriers.1.annualPremium": {
+      "type": "text",
+      "index": 177
+    },
+    "priorCarriers.1.coverageType": {
+      "type": "text",
+      "index": 181
+    },
+    "priorCarriers.1.retroactiveDate": {
+      "type": "text",
+      "index": 185
+    },
+    "priorCarriers.1.limitsOfLiability": {
+      "type": "text",
+      "index": 189
+    },
+    "priorCarriers.1.specialtyPracticed": {
+      "type": "text",
+      "index": 193
+    },
+    "priorCarriers.1.tailPurchased": {
+      "type": "yesno",
+      "yes": 102,
+      "no": 103
+    },
+    "priorCarriers.1.statesCovered": {
+      "type": "text",
+      "index": 197
+    },
+    "priorCarriers.1.anyClaims": {
+      "type": "yesno",
+      "yes": 110,
+      "no": 111
+    },
+    "priorCarriers.2.insurer": {
+      "type": "text",
+      "index": 162
+    },
+    "priorCarriers.2.coverageFrom": {
+      "type": "text",
+      "index": 167
+    },
+    "priorCarriers.2.coverageTo": {
+      "type": "text",
+      "index": 168
+    },
+    "priorCarriers.2.policyNumber": {
+      "type": "text",
+      "index": 174
+    },
+    "priorCarriers.2.annualPremium": {
+      "type": "text",
+      "index": 178
+    },
+    "priorCarriers.2.coverageType": {
+      "type": "text",
+      "index": 182
+    },
+    "priorCarriers.2.retroactiveDate": {
+      "type": "text",
+      "index": 186
+    },
+    "priorCarriers.2.limitsOfLiability": {
+      "type": "text",
+      "index": 190
+    },
+    "priorCarriers.2.specialtyPracticed": {
+      "type": "text",
+      "index": 194
+    },
+    "priorCarriers.2.tailPurchased": {
+      "type": "yesno",
+      "yes": 104,
+      "no": 105
+    },
+    "priorCarriers.2.statesCovered": {
+      "type": "text",
+      "index": 198
+    },
+    "priorCarriers.2.anyClaims": {
+      "type": "yesno",
+      "yes": 112,
+      "no": 113
+    },
+    "priorCarriers.3.insurer": {
+      "type": "text",
+      "index": 163
+    },
+    "priorCarriers.3.coverageFrom": {
+      "type": "text",
+      "index": 169
+    },
+    "priorCarriers.3.coverageTo": {
+      "type": "text",
+      "index": 170
+    },
+    "priorCarriers.3.policyNumber": {
+      "type": "text",
+      "index": 175
+    },
+    "priorCarriers.3.annualPremium": {
+      "type": "text",
+      "index": 179
+    },
+    "priorCarriers.3.coverageType": {
+      "type": "text",
+      "index": 183
+    },
+    "priorCarriers.3.retroactiveDate": {
+      "type": "text",
+      "index": 187
+    },
+    "priorCarriers.3.limitsOfLiability": {
+      "type": "text",
+      "index": 191
+    },
+    "priorCarriers.3.specialtyPracticed": {
+      "type": "text",
+      "index": 195
+    },
+    "priorCarriers.3.tailPurchased": {
+      "type": "yesno",
+      "yes": 106,
+      "no": 107
+    },
+    "priorCarriers.3.statesCovered": {
+      "type": "text",
+      "index": 199
+    },
+    "priorCarriers.3.anyClaims": {
+      "type": "yesno",
+      "yes": 114,
+      "no": 115
+    },
+    "priorCarriers.4.insurer": {
+      "type": "text",
+      "index": 164
+    },
+    "priorCarriers.4.coverageFrom": {
+      "type": "text",
+      "index": 171
+    },
+    "priorCarriers.4.coverageTo": {
+      "type": "text",
+      "index": 172
+    },
+    "priorCarriers.4.policyNumber": {
+      "type": "text",
+      "index": 176
+    },
+    "priorCarriers.4.annualPremium": {
+      "type": "text",
+      "index": 180
+    },
+    "priorCarriers.4.coverageType": {
+      "type": "text",
+      "index": 184
+    },
+    "priorCarriers.4.retroactiveDate": {
+      "type": "text",
+      "index": 188
+    },
+    "priorCarriers.4.limitsOfLiability": {
+      "type": "text",
+      "index": 192
+    },
+    "priorCarriers.4.specialtyPracticed": {
+      "type": "text",
+      "index": 196
+    },
+    "priorCarriers.4.tailPurchased": {
+      "type": "yesno",
+      "yes": 108,
+      "no": 109
+    },
+    "priorCarriers.4.statesCovered": {
+      "type": "text",
+      "index": 200
+    },
+    "priorCarriers.4.anyClaims": {
+      "type": "yesno",
+      "yes": 116,
+      "no": 117
+    },
+    "claims.everHadClaim": {
+      "type": "yesno",
+      "yes": 118,
+      "no": 119
+    },
+    "claims.pendingClaimOrIncident": {
+      "type": "yesno",
+      "yes": 120,
+      "no": 121
+    },
+    "claims.incidentsReportedToCarrier": {
+      "type": "yesno",
+      "yes": 122,
+      "no": 123
+    },
+    "supplemental.medicalLicense": {
+      "type": "yesno",
+      "yes": 124,
+      "no": 125
+    },
+    "supplemental.federalNarcoticLicense": {
+      "type": "yesno",
+      "yes": 126,
+      "no": 127
+    },
+    "supplemental.hospitalPrivileges": {
+      "type": "yesno",
+      "yes": 128,
+      "no": 129
+    },
+    "supplemental.professionalSociety": {
+      "type": "yesno",
+      "yes": 130,
+      "no": 131
+    },
+    "supplemental.peerBoardReview": {
+      "type": "yesno",
+      "yes": 132,
+      "no": 133
+    },
+    "supplemental.stateBoardComplaint": {
+      "type": "yesno",
+      "yes": 134,
+      "no": 135
+    },
+    "supplemental.deaReview": {
+      "type": "yesno",
+      "yes": 136,
+      "no": 137
+    },
+    "supplemental.medicalCondition": {
+      "type": "yesno",
+      "yes": 138,
+      "no": 139
+    },
+    "supplemental.civilOrCriminalCharges": {
+      "type": "yesno",
+      "yes": 140,
+      "no": 141
+    },
+    "supplemental.conviction": {
+      "type": "yesno",
+      "yes": 142,
+      "no": 143
+    },
+    "supplemental.insuranceRefusedOrCanceled": {
+      "type": "yesno",
+      "yes": 144,
+      "no": 145
+    },
+    "signatures.applicant.signature": {
+      "type": "text",
+      "index": 201,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.applicant.printedName": {
+      "type": "text",
+      "index": 202,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.applicant.date": {
+      "type": "text",
+      "index": 203,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.applicant.title": {
+      "type": "text",
+      "index": 204,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.producer.signature": {
+      "type": "text",
+      "index": 205,
+      "note": "Broker signs. Leave empty."
+    },
+    "signatures.producer.printedName": {
+      "type": "text",
+      "index": 206,
+      "note": "Broker signs. Leave empty."
+    },
+    "signatures.producer.date": {
+      "type": "text",
+      "index": 207,
+      "note": "Broker signs. Leave empty."
+    },
+    "signatures.producer.title": {
+      "type": "text",
+      "index": 208,
+      "note": "Broker signs. Leave empty."
+    },
+    "signatures.stateDisclosure.signature": {
+      "type": "text",
+      "index": 209,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.stateDisclosure.printedName": {
+      "type": "text",
+      "index": 210,
+      "note": "Leave empty \u2014 signed by hand after download."
+    },
+    "signatures.stateDisclosure.date": {
+      "type": "text",
+      "index": 211,
+      "note": "Leave empty \u2014 signed by hand after download."
+    }
+  }
+}

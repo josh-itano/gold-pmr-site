@@ -1,5 +1,17 @@
 {
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/coverage-application.js": { "includeFiles": "assets/**" }
+  },
+  "headers": [
+    {
+      "source": "/coverage-application",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
   ]
 }

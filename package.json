@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "verify:field-map": "node scripts/verify-field-map.js",
+    "prebuild": "npm run verify:field-map",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
+    "jszip": "^3.10.1",
     "lucide-react": "^1.23.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"

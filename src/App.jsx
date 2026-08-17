@@ -5,39 +5,10 @@ import {
   BrainCircuit, ChartColumn, ShieldAlert, ChartLine, ReceiptText, LayoutDashboard,
 } from "lucide-react";
 import { LOCALITIES, SETTINGS, CATEGORIES, RATE_CONFIG, estimate, categoryShares } from "./data/compRates";
-
-// Brand Kit — Edition 01 · 2026. Page 05 (Color) + page 12 (UI color roles).
-const C = {
-  // GOLDS. #C9A227 is DECORATIVE ONLY — the mark, rules, and large display on
-  // dark grounds. It is 2.4:1 on white, so it fails even the 3:1 large-text bar.
-  // Never text, never controls, never state. Any gold text/link uses deepGold.
-  gold: "#C9A227",        // decorative accent (fills, rules, numerals on ink)
-  goldLight: "#E8D48B",   // tint / glow
-  deepGold: "#846B1A",    // Accent — links, active, interactive, focus ring (AA 5.1:1)
-
-  // NEUTRALS — kit UI color roles.
-  dark: "#0F172A",        // Ink — primary text, and now dark grounds
-  navy: "#F0F4F8",        // Surface — alternating sections, cards, panels
-  slate: "#FFFFFF",       // Ground — card surfaces
-  white: "#FFFFFF",       // Ground — page background
-  light: "#F8FAFC",
-  line: "#E2E8F0",        // Line — dividers, borders
-
-  // Muted. The kit names Slate Gray #64748B here, but that swatch is 4.76:1 on
-  // White and only 4.31:1 on Mist — it fails the kit's own AA floor on the very
-  // surface the kit tells you to put sections and tiles on. The kit's contrast
-  // table never pairs Slate with Mist, so the conflict went unnoticed. Darkened
-  // one step: 5.41:1 on White, 4.90:1 on Mist. Flag for brand review.
-  muted: "#5D6B80",
-  mutedLight: "#334155",  // label text, one step darker than Muted
-
-  goldSoft: "rgba(201,162,39,0.08)", goldGlow: "rgba(201,162,39,0.15)",
-
-  // SEMANTIC. The kit defines no success/danger palette. These are the
-  // conventional hues darkened until they clear WCAG AA (4.5:1) on white,
-  // per the kit's digital-accessibility rules. Flag for brand review.
-  green: "#047857", red: "#B91C1C", amber: "#B45309",
-};
+import CoverageApplication from "./CoverageApplication";
+// Brand tokens live in theme.js so CoverageApplication.jsx can share them
+// without App.jsx exporting non-components (breaks Vite fast refresh).
+import { C, F } from "./theme";
 
 // Service iconography — kit p07. One system, held everywhere: a single 1.6px
 // stroke at 24px, charcoal, never filled, never multicolor. strokeWidth is in
@@ -46,13 +17,6 @@ const C = {
 // Icons are decorative here: every card states the same thing in its heading.
 const ICON = { size: 24, strokeWidth: 1.6, color: C.dark, "aria-hidden": true, focusable: false };
 
-// Outfit for display, headings, numerals. Jost for body and UI. System
-// fallback per kit page 12. The kit ships Light 300 / Regular 400 / Medium 500
-// only — there is no bold in this identity.
-const F = {
-  display: "'Outfit', system-ui, sans-serif",
-  body: "'Jost', system-ui, sans-serif",
-};
 
 // Kit p12 — "Honor reduced-motion." Motion-driven components consult this and
 // render their end state immediately rather than animating toward it.
@@ -130,7 +94,7 @@ function useCountUp(value, duration = 500) {
 // the dot is the one decorative gold element.
 // Ground is White, not the gold tint: Deep Gold over goldSoft-over-Mist measures
 // 4.37:1 and misses AA. On White it is the kit's stated 5.12:1.
-function Badge({ children }) {
+export function Badge({ children }) {
   return <span style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", border: `1px solid ${C.line}`, background: C.white, fontSize: 13, fontWeight: 300, letterSpacing: 2, textTransform: "uppercase", color: C.deepGold }}><span style={{ width: 6, height: 6, background: C.gold, borderRadius: "50%" }} aria-hidden="true" />{children}</span>;
 }
 
@@ -159,7 +123,7 @@ const careersUrl = (content) =>
 // Renders a real <a> when `href` is given (crawlable, middle-clickable,
 // right-click-open) — window.open would forfeit all three. External links get
 // target=_blank + rel=noopener,noreferrer.
-function Btn({ children, primary, onClick, href, external, full, style: s = {} }) {
+export function Btn({ children, primary, onClick, href, external, full, style: s = {} }) {
   const base = primary ? { background: C.gold, color: C.dark, border: "1px solid transparent" } : { background: "transparent", color: C.dark, border: `1px solid ${C.line}` };
   const style = { ...base, fontWeight: 500, padding: "13px 32px", minHeight: 44, fontSize: 15, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)", fontFamily: F.body, letterSpacing: 0.5, width: full ? "100%" : "auto", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, textDecoration: "none", boxSizing: "border-box", ...s };
   const onEnter = e => { if (primary) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,162,39,0.3)"; } else { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; } };
@@ -170,7 +134,7 @@ function Btn({ children, primary, onClick, href, external, full, style: s = {} }
 
 // No `outline: none` here — it would beat the global :focus-visible bronze ring,
 // since inline styles outrank the stylesheet.
-function Input({ label, type = "text", value, onChange, placeholder, options }) {
+export function Input({ label, type = "text", value, onChange, placeholder, options }) {
   const shared = { width: "100%", padding: "12px 16px", minHeight: 44, background: C.white, border: `1px solid ${C.line}`, color: C.dark, fontSize: 15, fontWeight: 300, fontFamily: F.body, transition: "border-color 0.3s" };
   return <div style={{ marginBottom: 20 }}>{label && <label style={{ display: "block", fontSize: 13, fontWeight: 400, color: C.mutedLight, marginBottom: 6 }}>{label}</label>}{type === "select" ? <select value={value} onChange={e => onChange(e.target.value)} style={{ ...shared, cursor: "pointer" }} onFocus={e => e.target.style.borderColor = C.deepGold} onBlur={e => e.target.style.borderColor = C.line}>{options.map(o => <option key={o.value} value={o.value} style={{ background: C.white }}>{o.label}</option>)}</select> : type === "textarea" ? <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={4} style={{ ...shared, resize: "vertical" }} onFocus={e => e.target.style.borderColor = C.deepGold} onBlur={e => e.target.style.borderColor = C.line} /> : <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={shared} onFocus={e => e.target.style.borderColor = C.deepGold} onBlur={e => e.target.style.borderColor = C.line} />}</div>;
 }
@@ -628,7 +592,10 @@ function ContactPage() {
 // vercel.json so the server hands every non-/api path to this app. document.title
 // is per-page for shareability (the shell HTML is JS-rendered, so this is what a
 // browser tab / link preview shows).
-const PATHS = { home: "/", facilities: "/facilities", physicians: "/physicians", technology: "/technology", contact: "/contact" };
+const PATHS = { home: "/", facilities: "/facilities", physicians: "/physicians", technology: "/technology", contact: "/contact", coverage: "/coverage-application" };
+// `coverage` is deliberately UNLISTED: not in the nav `links`, the footer columns, or
+// public/sitemap.xml, and it carries noindex (meta below + X-Robots-Tag in vercel.json).
+// It is reached by a link Gold sends to a physician post-offer. See docs/COVERAGE-APPLICATION.md.
 const ORIGIN = "https://www.goldpmr.com";
 // Per-route SEO metadata. index.html carries homepage-framed static defaults for
 // non-JS crawlers and social scrapers; these update title/description/canonical/OG
@@ -639,6 +606,7 @@ const META = {
   physicians: { title: "For Clinicians — Gold PM&R", desc: "PM&R and Internal Medicine physicians co-managing every patient — 70% compensation, AI documentation, personalized schedules, and a paid leadership ladder." },
   technology: { title: "GoldOS Platform — Gold PM&R", desc: "GoldOS is the intelligence layer for post-acute medical management: AI documentation, real-time compliance tracking, CMG optimization, and outcome analytics." },
   contact: { title: "Get in Touch — Gold PM&R", desc: "Facility exploring a physician partnership? Start a conversation with the Gold PM&R team." },
+  coverage: { title: "Prepare Your Coverage Application — Gold PM&R", desc: "Prepare your professional liability application for Gold PM&R's broker.", noindex: true },
 };
 const pageFromPath = (path) => Object.keys(PATHS).find(k => PATHS[k] === path) || "home";
 
@@ -659,6 +627,15 @@ function applyMeta(pageKey) {
   let link = document.head.querySelector('link[rel="canonical"]');
   if (!link) { link = document.createElement("link"); link.setAttribute("rel", "canonical"); document.head.appendChild(link); }
   link.setAttribute("href", url);
+  // Unlisted routes: upsert a robots noindex; remove it again on client-side
+  // navigation away, since the head persists across page swaps.
+  let robots = document.head.querySelector('meta[name="robots"]');
+  if (m.noindex) {
+    if (!robots) { robots = document.createElement("meta"); robots.setAttribute("name", "robots"); document.head.appendChild(robots); }
+    robots.setAttribute("content", "noindex, nofollow");
+  } else if (robots) {
+    robots.remove();
+  }
 }
 
 export default function App() {
@@ -747,8 +724,9 @@ export default function App() {
     {page === "physicians" && <PhysiciansPage />}
     {page === "technology" && <TechnologyPage nav={nav} />}
     {page === "contact" && <ContactPage />}
+    {page === "coverage" && <CoverageApplication />}
 
-    {page !== "contact" && <section style={{ background: C.navy, borderTop: `1px solid ${C.line}` }}><div className="cta-inner" style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}><div><h3 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 400, marginBottom: 4, color: C.dark }}>Ready to Raise the Standard?</h3><p style={{ color: C.muted, fontSize: 15, fontWeight: 300 }}>{page === "physicians" ? "Explore open roles and build your career with Gold." : "Let's talk about what Gold can do for your facility or your career."}</p></div>{page === "physicians" ? <Btn primary href={careersUrl("cta-band")} external>View Open Roles →</Btn> : <Btn primary onClick={() => nav("contact")}>Schedule a Conversation →</Btn>}</div></section>}
+    {page !== "contact" && page !== "coverage" && <section style={{ background: C.navy, borderTop: `1px solid ${C.line}` }}><div className="cta-inner" style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}><div><h3 style={{ fontFamily: F.display, fontSize: 24, fontWeight: 400, marginBottom: 4, color: C.dark }}>Ready to Raise the Standard?</h3><p style={{ color: C.muted, fontSize: 15, fontWeight: 300 }}>{page === "physicians" ? "Explore open roles and build your career with Gold." : "Let's talk about what Gold can do for your facility or your career."}</p></div>{page === "physicians" ? <Btn primary href={careersUrl("cta-band")} external>View Open Roles →</Btn> : <Btn primary onClick={() => nav("contact")}>Schedule a Conversation →</Btn>}</div></section>}
 
     {/* Ink Navy footer with the on-dark lockup. Together with the metrics band
         and the two result panels this brings ink navy to roughly the kit's 22%. */}

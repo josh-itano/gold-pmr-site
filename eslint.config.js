@@ -27,8 +27,8 @@ export default defineConfig([
     },
   },
   {
-    // Vercel functions run in Node, not the browser.
-    files: ['api/**/*.js'],
+    // Vercel functions and repo scripts run in Node, not the browser.
+    files: ['api/**/*.js', 'scripts/**/*.js'],
     languageOptions: {
       globals: globals.node,
     },

@@ -111,9 +111,11 @@ Nine steps, mobile-first (most physicians will do this on a phone):
 | 8 | Disclosures | Parts VII–VIII |
 | 9 | Review & download | — |
 
-**Part I (producer) is never shown.** The broker's agency name is
-`PRODUCER.agency` in `lib/buildCoverysPayload.js` — still the
-`«BROKER AGENCY NAME»` placeholder (see Open items).
+**Part I (producer) is never shown and is left blank on purpose.** The
+broker — Arthur J. Gallagher Risk Management Services LLC — completes Part I
+when the physician sends them the application (Josh's call, 2026-08-17).
+`PRODUCER.agency` in `lib/buildCoverysPayload.js` is `""` so nothing is
+written there.
 
 **The component's state object is the `FormState` contract** documented as a
 JSDoc typedef in `lib/buildCoverysPayload.js` — same keys, same
@@ -184,8 +186,6 @@ silently.
 
 ## Open items (before the link goes to a physician)
 
-- [ ] Replace `PRODUCER.agency` placeholder in `lib/buildCoverysPayload.js`
-      with the real broker agency + city/state.
 - [ ] Kate reviews the page copy for producer-licensing posture, and the
       no-retention design for the disclosure and medical-condition questions.
 - [ ] Production E2E at https://www.goldpmr.com/coverage-application with a

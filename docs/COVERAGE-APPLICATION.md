@@ -188,11 +188,14 @@ silently.
       with the real broker agency + city/state.
 - [ ] Kate reviews the page copy for producer-licensing posture, and the
       no-retention design for the disclosure and medical-condition questions.
-- [ ] Preview-deploy E2E with a real physician's data pattern (not lorem
-      ipsum): fill, download, open in Word, confirm every answer landed.
+- [ ] Production E2E at https://www.goldpmr.com/coverage-application with a
+      real physician's data pattern (not lorem ipsum): fill, download, open
+      in Word, confirm every answer landed. (Local browser E2E done Aug 16;
+      prod function verified Aug 17 — POST returns the filled .docx with the
+      right headers — so what remains is a human read-through in Word.)
 - [ ] Decide who sends the link and how (post-offer email template).
 
-## Shipped (Aug 16 2026)
+## Shipped (Aug 16 2026, commit `d4cf34b`, merged to `main` Aug 17)
 
 - Positional DOCX fill, verified 0 unmapped keys / well-formed XML on a
   realistic sample; verifier wired as `prebuild`.

@@ -27,7 +27,7 @@ exists to show the math, not just a number.
 | ALOS + default level mixes per care setting | **Measured** — Jan–Jul 2026 remittance extract (75,556 charges, 25 facilities, 29 providers) |
 | `PAYER_FACTOR` 0.979 | **Measured** — same extract |
 | `COLLECTION_RATE` 0.956 | **Chosen target** — ownership decision 2026-08-14. Measured was **0.863** (charges aged 5+ months). ~96% is the industry net-collection benchmark; using it raises every output ~10.8% above measured actuals |
-| Discharge capture | **Assumed full** — actuals showed only ~11.9% of episodes billed a discharge |
+| Discharge capture | **Assumed full** for IRF and LTAC — actuals showed only ~11.9% of episodes billed a discharge. Acute consult bills none by design (consultants never discharge) |
 | `COMP_RATE_MD` 0.70 | Public site-wide |
 | `COMP_RATE_APP` 0.60 | Ownership approved for public display 2026-08-14 (first public appearance of this figure) |
 | `APP_FACTOR` 0.85 | Statutory — Medicare pays NP/PA at 85% of PFS under own NPI |
@@ -75,3 +75,9 @@ number runs ahead of current-state billing, that is the answer — say it plainl
 At Nevada / IRF / physician / 24 per day / 5 days / 43 weeks:
 annual ≈ **$298,566**, average admission **$142.00**. San Jose ≈ +14.8% vs
 Nevada; NP/PA ≈ −27% vs physician (0.85 × 0.60 ÷ 0.70).
+
+Acute consult (same inputs): annual ≈ **$320,425** physician / **$233,452**
+NP/PA. Consult services bill no discharge (`billsDischarge: false`) — the
+attending of record bills 99238/99239 — so a 4-day consult is one admission +
+three progress notes. Before this fix (2026-11-09) the setting counted a
+discharge and showed $338,724.

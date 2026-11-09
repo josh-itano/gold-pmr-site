@@ -27,7 +27,9 @@ export const CPT_ORDER = [
 ];
 
 // Category shares follow length of stay and are NOT user-editable:
-// one admission + (ALOS − 2) progress notes + one discharge.
+// one admission + (ALOS − 2) progress notes + one discharge. Settings with
+// billsDischarge: false (consult services) fold the discharge day into
+// progress notes: one admission + (ALOS − 1) progress notes.
 export const CATEGORIES = [
   {
     id: "initial",
@@ -87,6 +89,9 @@ export const LOCALITIES = [
 // Care setting sets length of stay and the starting level distribution.
 // ALOS values are median billable days per episode from the actuals.
 // Level distributions are the observed charge mix.
+// billsDischarge: false — consultants never bill discharge day management
+// (99238/99239); the attending of record does. Their last visit is a
+// subsequent-care visit instead.
 export const SETTINGS = [
   {
     id: "irf",
@@ -107,14 +112,15 @@ export const SETTINGS = [
     label: "Acute consult service",
     blurb: "Shorter episodes, higher admission share",
     alos: 4,
+    billsDischarge: false,
     levels: { initial: [0, 35, 65], subsequent: [1, 72, 27], discharge: [15, 85] },
   },
 ];
 
 export const RATE_CONFIG = {
-  // Provider share of net collections. 70% is already stated publicly on the
-  // site (home page and physicians hero). 60% for APPs is not yet public —
-  // confirm before the NP/PA toggle ships.
+  // Provider share of net collections. 70% is stated publicly on the site
+  // (home page and physicians hero). 60% for APPs was approved for public
+  // display by ownership 2026-08-14 and ships in the NP/PA toggle.
   COMP_RATE_MD: 0.70,
   COMP_RATE_APP: 0.60,
 
@@ -144,7 +150,14 @@ export const RATE_CONFIG = {
 
 // Derived helpers — pure, no React.
 
-export function categoryShares(alos) {
+export function categoryShares(alos, billsDischarge = true) {
+  if (!billsDischarge) {
+    return {
+      initial: 1 / alos,
+      subsequent: Math.max(0, (alos - 1) / alos),
+      discharge: 0,
+    };
+  }
   return {
     initial: 1 / alos,
     subsequent: Math.max(0, (alos - 2) / alos),
@@ -158,8 +171,8 @@ function normalize(arr) {
 }
 
 /** Share of all visits, per CPT, in CPT_ORDER sequence. */
-export function visitMix(alos, levels) {
-  const cat = categoryShares(alos);
+export function visitMix(alos, levels, billsDischarge = true) {
+  const cat = categoryShares(alos, billsDischarge);
   const i = normalize(levels.initial);
   const s = normalize(levels.subsequent);
   const d = normalize(levels.discharge);
@@ -187,9 +200,9 @@ export function categoryAverage(rates, levels, categoryId) {
  * Full estimate. Returns every intermediate value so the UI can show the
  * derivation rather than just the total.
  */
-export function estimate({ locality, role, alos, levels, perDay, daysWeek, weeksYear }) {
+export function estimate({ locality, role, alos, billsDischarge = true, levels, perDay, daysWeek, weeksYear }) {
   const rates = ratesFor(locality, role);
-  const mix = visitMix(alos, levels);
+  const mix = visitMix(alos, levels, billsDischarge);
   const weightedAllowed = rates.reduce((a, v, i) => a + v * mix[i], 0);
   const afterPayer = weightedAllowed * RATE_CONFIG.PAYER_FACTOR;
   const perEncounter = afterPayer * RATE_CONFIG.COLLECTION_RATE;
@@ -220,7 +233,8 @@ export function estimate({ locality, role, alos, levels, perDay, daysWeek, weeks
 //
 // DISCHARGE CAPTURE
 //  In the actuals, only ~11.9% of episodes with an admission also carried a
-//  discharge charge. The SETTINGS above assume FULL capture, so the estimator
+//  discharge charge. The IRF and LTAC SETTINGS above assume FULL capture
+//  (acute consult bills no discharge by design — see billsDischarge), so the estimator
 //  shows what a provider earns when discharge day management is billed. That is
 //  the right basis for a forward-looking recruiting tool, but it means the
 //  estimate runs ahead of current-state billing until capture is fixed.

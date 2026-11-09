@@ -306,8 +306,10 @@ function CompEstimator() {
   // clamped numbers. normalize() in the data module scales shares that don't
   // total 100, so nothing typed is ever blocked or rewritten.
   const nums = (arr) => arr.map((v) => Math.max(0, Number(v) || 0));
-  const est = estimate({ locality, role, alos: setting.alos, levels: { initial: nums(levels.initial), subsequent: nums(levels.subsequent), discharge: nums(levels.discharge) }, perDay, daysWeek, weeksYear });
-  const shares = categoryShares(setting.alos);
+  const billsDischarge = setting.billsDischarge !== false;
+  const est = estimate({ locality, role, alos: setting.alos, billsDischarge, levels: { initial: nums(levels.initial), subsequent: nums(levels.subsequent), discharge: nums(levels.discharge) }, perDay, daysWeek, weeksYear });
+  const shares = categoryShares(setting.alos, billsDischarge);
+  const shownCategories = billsDischarge ? CATEGORIES : CATEGORIES.filter((c) => c.id !== "discharge");
   const animAnnual = useCountUp(est.annual);
   const setLevel = (catId, k, v) => setLevels((prev) => ({ ...prev, [catId]: prev[catId].map((x, i) => (i === k ? v : x)) }));
   const states = [...new Set(LOCALITIES.map((l) => l.state))];
@@ -385,7 +387,7 @@ function CompEstimator() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
         <div style={{ flex: "1 1 320px" }}>
           <h3 style={{ fontSize: 18, fontWeight: 500, color: C.dark, marginBottom: 6 }}>Your Visit Mix</h3>
-          <p style={{ fontSize: 14, fontWeight: 300, color: C.muted, lineHeight: 1.7, maxWidth: 720 }}>A {setting.alos}-day stay produces one admission, {setting.alos - 2} progress notes and one discharge — so the split follows length of stay. Expand to see the per-code rates behind your estimate.</p>
+          <p style={{ fontSize: 14, fontWeight: 300, color: C.muted, lineHeight: 1.7, maxWidth: 720 }}>{billsDischarge ? <>A {setting.alos}-day stay produces one admission, {setting.alos - 2} progress notes and one discharge — so the split follows length of stay.</> : <>A {setting.alos}-day consult produces one initial visit and {setting.alos - 1} follow-up visits — the attending physician bills the discharge.</>} Expand to see the per-code rates behind your estimate.</p>
         </div>
         <button onClick={() => setMixOpen((o) => !o)} aria-expanded={mixOpen} aria-controls="visit-mix-detail" style={{ minHeight: 44, padding: "8px 20px", background: "transparent", border: `1px solid ${C.line}`, color: C.dark, fontFamily: F.body, fontSize: 14, fontWeight: 400, cursor: "pointer", transition: "all 0.3s", display: "inline-flex", alignItems: "center", gap: 8 }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.deepGold; e.currentTarget.style.color = C.deepGold; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.line; e.currentTarget.style.color = C.dark; }}>{mixOpen ? "Hide details" : "Show details"}<span aria-hidden="true" style={{ display: "inline-block", fontSize: 12, transition: "transform 0.3s", transform: mixOpen ? "rotate(180deg)" : "none" }}>▾</span></button>
       </div>
@@ -402,13 +404,13 @@ function CompEstimator() {
         <div style={{ width: `${shares.discharge * 100}%`, background: C.goldLight, transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)" }} />
       </div>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap", fontSize: 13, fontWeight: 300, color: C.mutedLight, marginBottom: 28 }}>
-        {[["Admissions", C.dark, shares.initial], ["Progress notes", C.gold, shares.subsequent], ["Discharges", C.goldLight, shares.discharge]].map(([l, col, sh]) => (
+        {[["Admissions", C.dark, shares.initial], ["Progress notes", C.gold, shares.subsequent], ...(billsDischarge ? [["Discharges", C.goldLight, shares.discharge]] : [])].map(([l, col, sh]) => (
           <span key={l} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 10, height: 10, background: col, display: "inline-block" }} />{l} {Math.round(sh * 100)}%</span>
         ))}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 20 }}>
-        {CATEGORIES.map((cat) => {
+        {shownCategories.map((cat) => {
           const raw = levels[cat.id];
           const sum = raw.reduce((a, v) => a + (Number(v) || 0), 0);
           return (
@@ -417,7 +419,7 @@ function CompEstimator() {
                 <h4 style={{ fontFamily: F.display, fontSize: 16, fontWeight: 500, color: C.dark }}>{cat.title}</h4>
                 <span style={{ fontSize: 13, fontWeight: 300, color: C.mutedLight, whiteSpace: "nowrap" }}>{Math.round(shares[cat.id] * 100)}% of visits</span>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 300, color: C.muted, marginTop: 2, marginBottom: cat.note ? 2 : 14 }}>{cat.perStay}</div>
+              <div style={{ fontSize: 13, fontWeight: 300, color: C.muted, marginTop: 2, marginBottom: cat.note ? 2 : 14 }}>{!billsDischarge && cat.id === "subsequent" ? "Every day after the initial visit" : cat.perStay}</div>
               {cat.note && <div style={{ fontSize: 13, fontWeight: 300, color: C.muted, marginBottom: 14 }}>{cat.note}</div>}
               {cat.codes.map((c, k) => (
                 <div key={c.code} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto auto", alignItems: "center", gap: 10, padding: "8px 0", borderTop: `1px solid ${C.line}` }}>

@@ -16,9 +16,10 @@
 // in low-MP-GPCI California localities. Replace with PPRRVU2026 components when
 // convenient.
 //
-// Rates also assume the 1.0 work GPCI floor, which was extended only through
-// 1/31/2026. If it has lapsed, AZ, NV, Elsewhere-in-Texas and Elsewhere-in-
-// Oregon each drop roughly 0.7–0.8%.
+// Rates also assume the 1.0 work GPCI floor, extended through the end of
+// CY2026. CY2027 GPCIs reportedly drop it: AZ, NV, Elsewhere-in-Texas and
+// Elsewhere-in-Oregon each fall roughly 0.7–0.8%. This table is CY2026 only —
+// see docs/COMP-ESTIMATOR.md open items for the 2027 refresh.
 
 export const CPT_ORDER = [
   "99221", "99222", "99223",

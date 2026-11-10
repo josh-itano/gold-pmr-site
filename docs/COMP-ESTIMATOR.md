@@ -57,18 +57,49 @@ number runs ahead of current-state billing, that is the answer — say it plainl
   the latter are not professional-fee revenue and not part of the 70/60 split.
 - Malpractice RVU component is estimated at 7.5% of work RVU (<1% effect on any
   rate). Replace with PPRRVU2026 components when convenient.
-- Rates assume the 1.0 work GPCI floor, extended only through 1/31/2026. If
-  lapsed: AZ, NV, Elsewhere-in-TX, Elsewhere-in-OR drop ~0.7–0.8%.
+- Rates assume the 1.0 work GPCI floor. Per secondary sources it was extended
+  through the end of CY2026 (Feb 2026 appropriations package), so the 2026
+  table is right as built. The CY2027 GPCIs reportedly do not carry the floor —
+  see open item 1.
+- Medicare sequestration (2% of the Medicare-paid portion) is not modeled. The
+  0.956 collection benchmark is measured against allowed amounts, so it likely
+  doesn't absorb it. Net effect: estimates run ~0.9% high (0.583 FFS share ×
+  0.80 paid portion × 2%).
+- Slider ranges allow implausible workloads (40/day × 7 days × 52 weeks →
+  ~$1.2M). Consider capping.
 
 ## Open items
 
-1. **Stat-strip reconciliation.** Homepage says 19 facilities / 36+ providers /
+1. **CY2027 rate refresh — due before 2027-01-01.** The CY2027 PFS final rule
+   (released 2026-11-04) sets the non-QP conversion factor at **$32.63
+   (−2.31%)**. CF alone takes the Nevada/IRF/MD default from $298,566 to
+   ~$291,700. 2027 GPCIs reportedly drop the 1.0 work floor, so NV, AZ,
+   Elsewhere-in-TX and Elsewhere-in-OR fall a further ~0.7–0.8%. Rebuild the
+   `LOCALITIES` table from the CMS PPRRVU2027 and GPCI files (take real
+   malpractice RVUs while there, retiring the 7.5% estimate), update the
+   "CY2026" wording on the page, and refresh the reference values below.
+2. **Sequestration** (~0.9% overstatement, see Known gaps) — decide whether to
+   model it, e.g. as a factor beside `PAYER_FACTOR`.
+3. **Stat-strip reconciliation.** Homepage says 19 facilities / 36+ providers /
    6 states; the billing extract behind these rates covers 25 / 29 / 4 over
    seven months. Probably definitional (managed vs. billed-through), but
    reconcile before anyone in diligence puts them side by side.
-2. The page is labeled **Clinicians** (Aug 2026) but body copy claims specific
+4. The page is labeled **Clinicians** (Aug 2026) but body copy claims specific
    to physicians (70% share, "physicians co-manage") intentionally remain —
    the NP/PA story lives in the estimator's role toggle.
+
+## Review log
+
+**2026-11-09 diligence check.** Re-ran the estimator independently; reference
+values below reproduced exactly. All 136 locality × CPT rates fit a single
+two-factor RVU × GPCI model within $0.01 (no transcription errors). CF
+$33.4009 confirmed; Nevada 99223 implies 4.64 total RVUs vs a reported 2026
+national 4.68 (consistent with NV's sub-1.0 PE GPCI). `PAYER_FACTOR`
+recomputes to 0.9793 from its stated mix. **Not done:** a line-by-line check of
+every code's RVUs against PPRRVU2026 — the check catches typos, not a
+systematically wrong input. Finding fixed: acute consult was counting
+discharges consultants can't bill (commit `3c691a3`). Remaining findings are
+open items 1–2.
 
 ## Reference values (for regression checks)
 
